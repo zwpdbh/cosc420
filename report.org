@@ -1,0 +1,39 @@
+#+TITLE: COSC420 Neural Network Assignment
+
+* Objectives
+** Program
+1) learn, print out the number of epochs and the current population error every 100 epochs.
+2) test, enable he user to test the population of input patterns add see the activation of all units.
+3) show weights
+
+** Questions need to answer
+1) How well/quickly does the network learn different kinds of tasks?
+2) How do the parameter settings affect the learning process?
+3) How robuts/stable is its performance in the face of noise (in the data) or damange (to the network)?
+4) How well does it generalizes from a small grianning set to a larger data set from which the trainning set was a sample?
+5) Find suggestions in the lectures or literature for improving generalization and explore them.
+6) How much training is "enough"?
+7) What is the right size for a neural network?
+
+** Report
+The report should describe:
+1) the design of your network, noting the alternative designs that you considered.
+   - such as, a range of different error functions
+2) the results of your tests
+   - the test you decide to perform
+   - why these are interesting (what questions do they explore)
+   - The result should be presented with discussion, what have you learned, have you answered your original questions?
+3) explorations
+4) Graphs and tables are very useful for summarising and presenting data.
+5) An appendix which provide an overview of how to use your program.
+
+* Program
+** What functions does my program need to have?
+- Be able to split the data into training set and testing set.
+- During trainning print out the epoches and population error for every 100 epochs.
+- After training, given an testing data, output the following:
+  1) current weights
+  2) current state of neurons (which including the output)
+
+
+* Experiments 
