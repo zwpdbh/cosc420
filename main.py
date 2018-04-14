@@ -2,6 +2,8 @@ import numpy as np
 import os
 import random
 import math
+import sys
+
 
 class NN:
     """Hold the input and teaching input"""
@@ -24,7 +26,6 @@ class NN:
         self.num_of_outputAttr = teachingInput.shape[1]
 
         self.dataset = np.concatenate((inputs, teachingInput), axis=1)
-        self.num_patterns = self.dataset.shape[0]
 
 
     def checkSettings(self):
@@ -37,7 +38,7 @@ class NN:
         print "momentum is %f" % self.m
         print "learning_criterion is %f" % self.learning_criterion
 
-        print "num of pattern is: %d" % self.num_patterns
+        print "num of pattern is: %d" % self.dataset.shape[0]
         print "num_of_inputAttr is %d" % self.num_of_inputAttr
         print "num_of_outputAttr is %d" % self.num_of_outputAttr
         
@@ -85,14 +86,18 @@ class NN:
         self.B_o = np.zeros(shape=(self.outputNeurons.shape[0], 1))
         for k in xrange(0, self.B_o.shape[0]):
             self.B_o[k] = random.uniform(0.1, 0.7)
-            
+
+        # Need to initialize the previous changes of weights
+        self.delta_W_1 = np.zeros(shape=(self.hiddenNeurons.shape[0], self.inputNeurons.shape[0]))
+        self.delta_W_2 = np.zeros(shape=(self.outputNeurons.shape[0], self.hiddenNeurons.shape[0]))
+        self.delta_B_h = np.zeros(shape=(self.hiddenNeurons.shape[0], 1))
+        self.delta_B_o = np.zeros(shape=(self.outputNeurons.shape[0], 1))
 
     # this function compute the change of states for a given input pattern
-    def computeForward(self, input):
+    def compute_forward(self, input):
         # the first layer's state will be setted directly by input
         for i in xrange(0, self.inputNeurons.shape[0]):
             self.inputNeurons[i] = input[i]
-
 
         # the second / third layer's states = sum ( w * (output of previous layer + bias = 1)) go through
         # activation function
@@ -115,7 +120,6 @@ class NN:
             sum += self.B_o[k]
             self.outputNeurons[k] = (1.0 / (1.0 + math.exp(-sum)))
 
-            
     # function compute the back-propagation based on errors
     def computeBackpropagation(self, backErrors):
         # save the orignal weights, since later they will be changed
@@ -127,9 +131,11 @@ class NN:
             deltaPKs[k] = backErrors[k] * self.outputNeurons[k] * (1.0 - self.outputNeurons[k])
 
             for j in xrange(self.hiddenNeurons.shape[0]):
-                self.W_2[k][j] = W_2_save[k][j] + (self.r * deltaPKs[k] * self.hiddenNeurons[j])
-                self.B_o[k] += (self.r * deltaPKs[k] * 1.0)
-                
+                self.W_2[k][j] = W_2_save[k][j] + (self.r * deltaPKs[k] * self.hiddenNeurons[j]) + self.m * self.delta_W_2[k][j]
+                self.B_o[k] += ((self.r * deltaPKs[k] * 1.0) + self.m * self.delta_B_o[k])
+                # record down the changes of weights and bias for Momentum
+                self.delta_W_2[k][j] = self.r * deltaPKs[k] * self.hiddenNeurons[j]
+                self.delta_B_o[k] = self.r * deltaPKs[k] * 1.0
 
         # for first layer weights
         for j in xrange(self.hiddenNeurons.shape[0]):
@@ -139,12 +145,13 @@ class NN:
 
             deltaPJ = self.hiddenNeurons[j] * (1 - self.hiddenNeurons[j]) * sumFromOutputLayer
             for i in xrange(self.inputNeurons.shape[0]):
-                self.W_1[j][i] += (self.r * deltaPJ * self.inputNeurons[i])
-                self.B_h[j] += (self.r * deltaPJ * 1.0)
-
+                self.W_1[j][i] += (self.r * deltaPJ * self.inputNeurons[i] + self.m * self.delta_W_1[j][i])
+                self.B_h[j] += (self.r * deltaPJ * 1.0 + self.m * self.delta_B_h[j])
+                self.delta_W_1[j][i] = self.r * deltaPJ * self.inputNeurons[i]
+                self.delta_B_h[j] = self.r * deltaPJ * 1.0
 
     # functions do the trainning on dataset
-    def train(self, epoches):
+    def train(self, training_set, epoches):
         epoch = 0
 
         while(epoches > 0):
@@ -152,21 +159,22 @@ class NN:
             backErrors = np.zeros(shape=(self.outputNeurons.shape[0],1))
             
             # shuffle the dataset for each epoch training
-            np.random.shuffle(self.dataset)
+            np.random.shuffle(training_set)
             sum = 0.0
 
-            for i in xrange(0, self.num_patterns):
-                # take each row sliced off from dataset's input part
-                self.computeForward(self.dataset[i][:self.num_of_inputAttr])
-                
+            for i in xrange(0, training_set.shape[0]):
+                # for each row, slice off the corresponding input part
+                self.compute_forward(training_set[i][:self.num_of_inputAttr])
+
                 for k in xrange(0, self.num_of_outputAttr):
-                    err = self.dataset[i][-1:self.dataset.shape[1]][k] - self.outputNeurons[k]
+                    # self.dataset[i][k + self.num_of_inputAttr] is the corresponding output part
+                    err = training_set[i][k + self.num_of_inputAttr] - self.outputNeurons[k]
                     sum += (err * err)
                     backErrors[k] = err
                     
                 self.computeBackpropagation(backErrors)
 
-            popErr = sum / (self.num_of_outputAttr * self.num_patterns)
+            popErr = sum / (self.num_of_outputAttr * training_set.shape[0])
             epoch += 1
 
             if epoch % 100 == 0:
@@ -175,6 +183,41 @@ class NN:
             epoches -= 1
             if popErr < self.learning_criterion:
                 break
+
+
+# a function used for prompting to guid use to test training result
+def query_yes_no(question, default="yes"):
+    """Ask a yes/no question via raw_input() and return their answer.
+
+    "question" is a string that is presented to the user.
+    "default" is the presumed answer if the user just hits <Enter>.
+        It must be "yes" (the default), "no" or None (meaning
+        an answer is required of the user).
+
+    The "answer" return value is True for "yes" or False for "no".
+    """
+    valid = {"yes": True, "y": True, "ye": True,
+             "no": False, "n": False}
+    if default is None:
+        prompt = " [y/n] "
+    elif default == "yes":
+        prompt = " [Y/n] "
+    elif default == "no":
+        prompt = " [y/N] "
+    else:
+        raise ValueError("invalid default answer: '%s'" % default)
+
+    while True:
+        print "\n==="
+        sys.stdout.write(question + prompt)
+        choice = raw_input().lower()
+        if default is not None and choice == '':
+            return valid[default]
+        elif choice in valid:
+            return valid[choice]
+        else:
+            sys.stdout.write("Please respond with 'yes' or 'no' "
+                             "(or 'y' or 'n').\n")
 
 
     
@@ -186,9 +229,44 @@ if __name__ == '__main__':
     teachingInput = np.loadtxt('teaching_input.txt')
 
     nn = NN(params, inputs, teachingInput)
-    
+
     nn.initializeWeights()
     nn.checkInitializedWeightsAndBiases()
     nn.checkSettings()
 
-    nn.train(2000000)
+    # === training phrase ===
+    # divide data set into training_set and testing_set
+    # only dived data when it is on Iris dataset
+    if nn.dataset.shape[0] == 150:
+        np.random.shuffle(nn.dataset)
+        # make the first 0~99 patters as testing pattern
+        training_set = nn.dataset[:100]
+        # make the 100~149 patterns as testing pattern
+        testing_set = nn.dataset[-50:150]
+    else:
+        training_set = nn.dataset
+        testing_set = nn.dataset
+
+    nn.train(training_set, 2000000)
+
+    # === testing phrase ===
+    while True:
+        if query_yes_no("Pick a random patter for testing?"):
+            # randomly pick a pattern from testing_set
+            np.random.shuffle(testing_set)
+            pattern = testing_set[0]
+            input = pattern[:nn.num_of_inputAttr]
+            teaching_input = pattern[-1*nn.num_of_outputAttr:nn.dataset.shape[0]]
+
+            print "the input is: "
+            print input
+            print "the teaching input is: "
+            print teaching_input
+
+            print "the output from NN is"
+            nn.compute_forward(input)
+            print nn.outputNeurons
+        else:
+            sys.exit(0)
+
+
