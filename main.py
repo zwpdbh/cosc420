@@ -55,6 +55,7 @@ class Form(QDialog):
         self.setWindowTitle("Neural Network")
 
         self.connect(self.initButton, SIGNAL("clicked()"), self.initialize)
+        self.connect(self.teachEpochButton, SIGNAL("clicked()"), self.teach100Epoch)
 
     def initialize(self):
         params = np.loadtxt('param.txt')
@@ -63,8 +64,28 @@ class Form(QDialog):
         self.nn = NN(params, inputs, teachingInput)
         self.nn.initializeWeights()
 
+        self.browser.append("Initialization complete, current settings are:")
+        self.browser.append("the number of inputNeurons = %d" % self.nn.inputNeurons.shape[0])
+        self.browser.append("the number of hiddenNeurons = %d" % self.nn.hiddenNeurons.shape[0])
+        self.browser.append("the number of outputNeurons = %d" % self.nn.outputNeurons.shape[0])
+        self.browser.append("learning rate = %.3f" % self.nn.r)
+        self.browser.append("momentum = %.3f" % self.nn.m)
+        self.browser.append("learning criterion = %.3f" % self.nn.learning_criterion)
+
+        # according to the dataset split it into training and testing
+        if self.nn.dataset.shape[0] == 150:
+            np.random.shuffle(self.nn.dataset)
+            # make the first 0~99 patters as testing pattern
+            self.training_set = self.nn.dataset[:100]
+            # make the 100~149 patterns as testing pattern
+            self.testing_set = self.nn.dataset[-50:150]
+        else:
+            self.training_set = self.nn.dataset
+            self.testing_set = self.nn.dataset
 
 
+    def teach100Epoch(self):
+        
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
