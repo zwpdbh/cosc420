@@ -1,7 +1,8 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import sys
-
+import numpy as np
+from NeuralNetwork import NN
 
 '''
 Main menu: 
@@ -51,15 +52,22 @@ class Form(QDialog):
         self.totalwg.setLayout(total_wg_layout)
 
         self.setLayout(total_wg_layout)
-
         self.setWindowTitle("Neural Network")
+
+        self.connect(self.initButton, SIGNAL("clicked()"), self.initialize)
+
+    def initialize(self):
+        params = np.loadtxt('param.txt')
+        inputs = np.loadtxt('input.txt')
+        teachingInput = np.loadtxt('teaching_input.txt')
+        self.nn = NN(params, inputs, teachingInput)
+        self.nn.initializeWeights()
 
 
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-
     form = Form()
     form.show()
     app.exec_()
