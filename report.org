@@ -37,3 +37,9 @@ The report should describe:
 
 
 * Experiments 
+- measure the execution time under the changes of the following criterion:
+  1) learning rate
+  2) momentum
+  3) learning_criterion
+
+- measure the execution time 
