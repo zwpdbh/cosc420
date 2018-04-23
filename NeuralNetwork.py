@@ -27,38 +27,6 @@ class NN:
 
         self.dataset = np.concatenate((inputs, teachingInput), axis=1)
 
-
-    def checkSettings(self):
-        print "the setting of NN is:"
-        print "the inputNeurons = %d" % self.inputNeurons.shape[0]
-        print "the hiddenNeurons = %d" % self.hiddenNeurons.shape[0]
-        print "the outputNeurons = %d" % self.outputNeurons.shape[0]
-
-        print "learning rate is: %f" % self.r
-        print "momentum is %f" % self.m
-        print "learning_criterion is %f" % self.learning_criterion
-
-        print "num of pattern is: %d" % self.dataset.shape[0]
-        print "num_of_inputAttr is %d" % self.num_of_inputAttr
-        print "num_of_outputAttr is %d" % self.num_of_outputAttr
-        
-        print "the dataset is: "
-        print self.dataset
-
-    def checkInitializedWeightsAndBiases(self):
-        print "W_1 : "
-        print nn.W_1
-
-        print "W_2 : "
-        print nn.W_2
-
-        print "B_h: "
-        print nn.B_h
-
-        print "B_o:"
-        print nn.B_o
-
-
     # initialize weights between layers, including biases
     def initializeWeights(self):
         # W_1 is the weight between input layter and hidden layter, j row for j hidden neurons
@@ -151,10 +119,11 @@ class NN:
                 self.delta_B_h[j] = self.r * deltaPJ * 1.0
 
     # functions do the trainning on dataset
-    def train(self, training_set, epoches):
-        epoch = 0
+    def train(self, training_set):
+        epoch = 100
+        popErr = -1.0
 
-        while(epoches > 0):
+        while(epoch > 0):
             # for each epoch
             backErrors = np.zeros(shape=(self.outputNeurons.shape[0],1))
             
@@ -175,108 +144,9 @@ class NN:
                 self.computeBackpropagation(backErrors)
 
             popErr = sum / (self.num_of_outputAttr * training_set.shape[0])
-            epoch += 1
+            epoch -= 1
 
-            if epoch % 100 == 0:
-                print "epoch = %d, popErr = %f" % (epoch, popErr)
+        return popErr
 
-            # if epoch % 2000 == 0 and self.r > 0.001:
-            #     self.r = self.r - self.r * 0.25
-            #     print "change learning rate to: %f" % self.r
-                
-            epoches -= 1
-            if popErr < self.learning_criterion:
-                break
-
-
-# a function used for prompting to guid use to test training result
-def query_yes_no(question, default="yes"):
-    """Ask a yes/no question via raw_input() and return their answer.
-
-    "question" is a string that is presented to the user.
-    "default" is the presumed answer if the user just hits <Enter>.
-        It must be "yes" (the default), "no" or None (meaning
-        an answer is required of the user).
-
-    The "answer" return value is True for "yes" or False for "no".
-    """
-    valid = {"yes": True, "y": True, "ye": True,
-             "no": False, "n": False}
-    if default is None:
-        prompt = " [y/n] "
-    elif default == "yes":
-        prompt = " [Y/n] "
-    elif default == "no":
-        prompt = " [y/N] "
-    else:
-        raise ValueError("invalid default answer: '%s'" % default)
-
-    while True:
-        print "\n==="
-        sys.stdout.write(question + prompt)
-        choice = raw_input().lower()
-        if default is not None and choice == '':
-            return valid[default]
-        elif choice in valid:
-            return valid[choice]
-        else:
-            sys.stdout.write("Please respond with 'yes' or 'no' "
-                             "(or 'y' or 'n').\n")
-
-
-    
-if __name__ == '__main__':
-
-    # load params and data from .txt file in the current directory
-    params = np.loadtxt('param.txt')
-    inputs = np.loadtxt('input.txt')
-    teachingInput = np.loadtxt('teaching_input.txt')
-
-    nn = NN(params, inputs, teachingInput)
-
-    nn.initializeWeights()
-    nn.checkInitializedWeightsAndBiases()
-    nn.checkSettings()
-
-    # === training phrase ===
-    # divide data set into training_set and testing_set
-    # only dived data when it is on Iris dataset
-    if nn.dataset.shape[0] == 150:
-        np.random.shuffle(nn.dataset)
-        # make the first 0~99 patters as testing pattern
-        training_set = nn.dataset[:100]
-        # make the 100~149 patterns as testing pattern
-        testing_set = nn.dataset[-50:150]
-    else:
-        training_set = nn.dataset
-        testing_set = nn.dataset
-
-    nn.train(training_set, 10000)
-
-    # === testing phrase ===
-    while True:
-        if query_yes_no("Pick a random patter for testing?"):
-            # randomly pick a pattern from testing_set
-            np.random.shuffle(testing_set)
-            pattern = testing_set[0]
-            input = pattern[:nn.num_of_inputAttr]
-            i = nn.num_of_outputAttr
-            j = pattern.shape[0]
-            teaching_input = pattern[-i:j]
-
-            print "the input is: "
-            print input
-            print "the teaching input is: "
-            print teaching_input
-
-            print "the output from NN is"
-            nn.compute_forward(input)
-            print nn.outputNeurons
-
-            print "the hidden layer from NN is"
-            print nn.hiddenNeurons
-            
-        else:
-            sys.exit(0)
 
 

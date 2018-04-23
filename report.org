@@ -43,3 +43,20 @@ The report should describe:
   3) learning_criterion
 
 - measure the execution time 
+
+** Use iris dataset as example to collect data
+- momentum = 0.9
+- criterion = 0.02
+Change learning rate to compare number of epoches needed
+| Constant |   run1 | run 2 | run 3 | run4 | run5 | run6 | run7 | run8 | run9 | run10 |
+|     0.01 | 284800 | 23600 | 50400 |      |      |      |      |      |      |       |
+|     0.02 |        |       |       |      |      |      |      |      |      |       |
+|     0.03 |        |       |       |      |      |      |      |      |      |       |
+|     0.04 |        |       |       |      |      |      |      |      |      |       |
+|     0.05 |        |       |       |      |      |      |      |      |      |       |
+|     0.06 |        |       |       |      |      |      |      |      |      |       |
+|     0.07 |        |       |       |      |      |      |      |      |      |       |
+|     0.08 |        |       |       |      |      |      |      |      |      |       |
+|     0.09 |        |       |       |      |      |      |      |      |      |       |
+|     0.10 |        |       |       |      |      |      |      |      |      |       |
+|     0.15 |        |       |       |      |      |      |      |      |      |       |
