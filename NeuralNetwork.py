@@ -29,6 +29,7 @@ class NN:
 
     # initialize weights between layers, including biases
     def initializeWeights(self):
+        max_random_w = 0.95
         # W_1 is the weight between input layter and hidden layter, j row for j hidden neurons
         # i column of i input neurons
         self.W_1 = np.zeros(shape=(self.hiddenNeurons.shape[0], self.inputNeurons.shape[0]))
@@ -38,28 +39,30 @@ class NN:
         
         for j in xrange(0, self.W_1.shape[0]):
             for i in xrange(0, self.W_1.shape[1]):
-                self.W_1[j][i] = random.uniform(0.1, 0.7)
+                self.W_1[j][i] = random.uniform(0.1, max_random_w)
 
         for k in xrange(0, self.W_2.shape[0]):
             for j in xrange(0, self.W_2.shape[1]):
-                self.W_2[k][j] = random.uniform(0.1, 07)
+                self.W_2[k][j] = random.uniform(0.1, max_random_w)
 
         
         # B_h is biases for hidden neurons
         self.B_h = np.zeros(shape=(self.hiddenNeurons.shape[0], 1))
         for j in xrange(0, self.B_h.shape[0]):
-            self.B_h[j] = random.uniform(0.1, 0.7)
+            self.B_h[j] = random.uniform(0.1, max_random_w)
 
         # B_o is baises for output neurons
         self.B_o = np.zeros(shape=(self.outputNeurons.shape[0], 1))
         for k in xrange(0, self.B_o.shape[0]):
-            self.B_o[k] = random.uniform(0.1, 0.7)
+            self.B_o[k] = random.uniform(0.1, max_random_w)
 
         # Need to initialize the previous changes of weights
         self.delta_W_1 = np.zeros(shape=(self.hiddenNeurons.shape[0], self.inputNeurons.shape[0]))
         self.delta_W_2 = np.zeros(shape=(self.outputNeurons.shape[0], self.hiddenNeurons.shape[0]))
         self.delta_B_h = np.zeros(shape=(self.hiddenNeurons.shape[0], 1))
         self.delta_B_o = np.zeros(shape=(self.outputNeurons.shape[0], 1))
+
+
 
     # this function compute the change of states for a given input pattern
     def compute_forward(self, input):
@@ -101,7 +104,7 @@ class NN:
             for j in xrange(self.hiddenNeurons.shape[0]):
                 self.W_2[k][j] = W_2_save[k][j] + (self.r * deltaPKs[k] * self.hiddenNeurons[j]) + self.m * self.delta_W_2[k][j]
                 self.B_o[k] += ((self.r * deltaPKs[k] * 1.0) + self.m * self.delta_B_o[k])
-                # record down the changes of weights and bias for Momentum
+                # record down the changes of weights and bias for Momentum usage: learning_rate * delta_wji (n - 1)
                 self.delta_W_2[k][j] = self.r * deltaPKs[k] * self.hiddenNeurons[j]
                 self.delta_B_o[k] = self.r * deltaPKs[k] * 1.0
 
@@ -115,37 +118,31 @@ class NN:
             for i in xrange(self.inputNeurons.shape[0]):
                 self.W_1[j][i] += (self.r * deltaPJ * self.inputNeurons[i] + self.m * self.delta_W_1[j][i])
                 self.B_h[j] += (self.r * deltaPJ * 1.0 + self.m * self.delta_B_h[j])
+                # record down the changes of weights and bias for Momentum usage: learning_rate * delta_wji (n - 1)
                 self.delta_W_1[j][i] = self.r * deltaPJ * self.inputNeurons[i]
                 self.delta_B_h[j] = self.r * deltaPJ * 1.0
 
-    # functions do the trainning on dataset
+    # train for one epoch
     def train(self, training_set):
-        epoch = 100
-        popErr = -1.0
+        backErrors = np.zeros(shape=(self.outputNeurons.shape[0], 1))
 
-        while(epoch > 0):
-            # for each epoch
-            backErrors = np.zeros(shape=(self.outputNeurons.shape[0],1))
-            
-            # shuffle the dataset for each epoch training
-            np.random.shuffle(training_set)
-            sum = 0.0
+        # shuffle the dataset for each epoch training
+        np.random.shuffle(training_set)
+        sum = 0.0
 
-            for i in xrange(0, training_set.shape[0]):
-                # for each row, slice off the corresponding input part
-                self.compute_forward(training_set[i][:self.num_of_inputAttr])
+        for i in xrange(0, training_set.shape[0]):
+            # for each row, slice off the corresponding input part
+            self.compute_forward(training_set[i][:self.num_of_inputAttr])
 
-                for k in xrange(0, self.num_of_outputAttr):
-                    # self.dataset[i][k + self.num_of_inputAttr] is the corresponding output part
-                    err = training_set[i][k + self.num_of_inputAttr] - self.outputNeurons[k]
-                    sum += (err * err)
-                    backErrors[k] = err
-                    
-                self.computeBackpropagation(backErrors)
+            for k in xrange(0, self.num_of_outputAttr):
+                # self.dataset[i][k + self.num_of_inputAttr] is the corresponding output part
+                err = training_set[i][k + self.num_of_inputAttr] - self.outputNeurons[k]
+                sum += (err * err)
+                backErrors[k] = err
 
-            popErr = sum / (self.num_of_outputAttr * training_set.shape[0])
-            epoch -= 1
+            self.computeBackpropagation(backErrors)
 
+        popErr = sum / (self.num_of_outputAttr * training_set.shape[0])
         return popErr
 
 
