@@ -8,16 +8,15 @@ class Controller:
         pass
 
     def show_menu(self):
-        self.accuracy_criteria = 0.90
-        print("\nPlease input 0 - 5 to select:")
+        self.accuracy_criteria = 0.9
+        print("\nPlease input 0 - 7 to select:")
         print("1 : initialize")
-        print("2 : teach until accuracy >= %.2f during testing" % self.accuracy_criteria)
-        print("3 : teach 100 epochs")
+        print("2 : teach 100 epochs")
+        print("3 : teach until accuracy >= %.2f during testing" % self.accuracy_criteria)
         print("4 : teach to criteria")
         print("5 : randomly select one patter to test")
         print("6 : show weights")
         print("7 : run 100 test and collect training result")
-        print("8 : testPlot")
         print("0 : quit")
 
     def initialize(self):
@@ -103,21 +102,25 @@ class Controller:
         print("the accuracy = %d / %d = %.3f" % (self.test_T, self.test_total,  self.accuracy))
 
     def testPlot(self):
+        epoch_record = []
         for i in xrange(1000):
-            self.epoch_record.append(i)
-            self.popErr_record.append(0.5)
-            self.accuracy_record.append(0.2)
-        plt.subplot(211)
-        plt.xlabel("epochs")
-        plt.ylabel("popErr")
-        plt.grid(True)
-        plt.plot(self.epoch_record, self.popErr_record)
-        plt.subplot(212)
-        plt.xlabel("epochs")
-        plt.ylabel("accuracy")
-        plt.grid(True)
-        plt.plot(self.epoch_record, self.accuracy_record)
+            epoch_record.append(i)
+
+        fig, ax1 = plt.subplots()
+        ax1.plot(epoch_record, np.sin(epoch_record), 'b-')
+        ax1.set_xlabel('epochs')
+        # Make the y-axis label, ticks and tick labels match the line color.
+        ax1.set_ylabel('popErr', color='b')
+        ax1.tick_params('y', colors='b')
+
+        ax2 = ax1.twinx()
+        ax2.plot(epoch_record, np.cos(epoch_record), 'r-')
+        ax2.set_ylabel('accuracy rate', color='r')
+        ax2.tick_params('y', colors='r')
+
+        fig.tight_layout()
         plt.show()
+
 
     def teachToAccuracy(self):
         while self.accuracy <= self.accuracy_criteria:
@@ -148,17 +151,22 @@ class Controller:
             self.accuracy_record.append(self.accuracy)
             self.epoch_record.append(self.totalEpochs)
         print("Epoch = %d, Accuracy = %.3f" % (self.totalEpochs, self.accuracy))
-        plt.subplot(211)
-        plt.xlabel("epochs")
-        plt.ylabel("popErr")
-        plt.grid(True)
-        plt.plot(self.epoch_record, self.popErr_record)
-        plt.subplot(212)
-        plt.xlabel("epochs")
-        plt.ylabel("accuracy")
-        plt.grid(True)
-        plt.plot(self.epoch_record, self.accuracy_record)
-        plt.show()
+        fig, ax1 = plt.subplots()
+        ax1.plot(self.epoch_record, self.popErr_record, 'b-')
+        ax1.set_xlabel('epochs')
+        # Make the y-axis label, ticks and tick labels match the line color.
+        ax1.set_ylabel('popErr', color='b')
+        ax1.tick_params('y', colors='b')
+
+        ax2 = ax1.twinx()
+        ax2.plot(self.epoch_record, self.accuracy_record, 'r-')
+        ax2.set_ylabel('accuracy rate', color='r')
+        ax2.tick_params('y', colors='r')
+
+        fig.tight_layout()
+        plt.savefig("popErr_vs_accuracy.png")
+        print("save popErr_vs_accuracy.png in the current directory")
+
 
     def test(self):
         np.random.shuffle(self.testing_set)
@@ -205,9 +213,9 @@ if __name__ == '__main__':
         if selected == 1:
             controller.initialize()
         elif selected == 2:
-            controller.teachToAccuracy()
-        elif selected == 3:
             controller.teach100Epoch()
+        elif selected == 3:
+            controller.teachToAccuracy()
         elif selected == 4:
             controller.teachToCriteria()
         elif selected == 5:
@@ -216,8 +224,6 @@ if __name__ == '__main__':
             controller.checkWeights()
         elif selected == 7:
             controller.run100TestAndCollectData()
-        elif selected == 8:
-            controller.testPlot()
         elif selected == 0:
             controller.quit()
         else:

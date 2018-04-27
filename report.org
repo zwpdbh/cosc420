@@ -57,13 +57,12 @@ The following table shows the epochs need to train my neural network to =criteri
   |         33 |       304 |       403 |       647 |       515 |       580 |     35000 |
   |         34 |        61 |       539 |       102 |       798 |     35000 |     35000 |
   |         35 |       104 |     35000 |       172 |       183 |       236 |      1562 |
-  |       Mean | 1207.3143 | 1650.3714 | 2320.4571 | 863.97143 | 1415.5714 | 1840.2286 |
+  |       Mean | 3207.3143 | 4650.3714 | 5320.4571 | 4863.9714 | 5415.5714 | 5840.2286 |
   | Num of N/A |         2 |         3 |         3 |         4 |         4 |         4 |
 
-#+TBLFM: @37$7=vmean(@2..@36)
-
--Because sometimes it   
-
+#+TBLFM: @37$2=vmean(@2..@36)::@37$3=vmean(@2..@36)::@37$4=vmean(@2..@36)::@37$5=vmean(@2..@36)::@37$6=vmean(@2..@36)::@37$7=vmean(@2..@36)
+- Because sometimes it takes so long to reach the learning criteria, I have to cancel the training. And the cell in the table has record 35000 is the one has been marked as "N/A" in orgin. To compute the statistics, I replace those "N/A" with a relatively reasonable large epochs = 35000.
+- From the 
 
 * Discussion
 Though the experiments on training my neural network, I notice several points:
@@ -88,19 +87,22 @@ The program will try to load 3 files in the same directory: param.txt, input.txt
 *** How to use the program
 When It runs, it will goes into a loop to wait the user's input:
 #+BEGIN_SRC sh
-  Please input 0 - 5 to select:
+  Please input 0 - 7 to select:
   1 : initialize
   2 : teach 100 epochs
-  3 : teach to criteria
-  4 : randomly select one patter to test
-  5 : show weights
+  3 : teach until accuracy >= 0.90 during testing
+  4 : teach to criteria
+  5 : randomly select one patter to test
+  6 : show weights
+  7 : run 100 test and collect training result
   0 : quit
+  your choice =>
 #+END_SRC
 
 1) You need to first initialize the neural network 
-2) Then, you could chose other options. Notice, the option 3 will train the neural network to learning criteria and it will not stop until it reaches there.
-3) Option 4, will randomly pick a patter from training dataset to see the output result of neural network.
-4) If you want to start another training, you could restart the program or choose option 1 to reset the whole program to initial state.
+2) Then, you could chose other options. Notice, the option 3 and 4 will keep training the neural network until it reaches the pre-specific settings.
+3) If you want to start another training, you could restart the program or choose option 1 to reset the whole program to initial state.
+
 * Objectives
 ** Program
 1) learn, print out the number of epochs and the current population error every 100 epochs.

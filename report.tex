@@ -1,4 +1,4 @@
-% Created 2018-04-27 Fri 13:06
+% Created 2018-04-27 Fri 13:48
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -57,51 +57,46 @@ The following table shows the epochs need to train my neural network to \texttt{
 id & r=0.2 & r=0.15 & r=0.1 & r=0.09 & r=0.08 & r=0.05\\
 \hline
 1 & 66 & 55 & 117 & 5705 & 229 & 4441\\
-2 & 183 & 301 & 0 & 1571 & 864 & 2375\\
+2 & 183 & 301 & 35000 & 1571 & 864 & 2375\\
 3 & 179 & 216 & 178 & 228 & 310 & 1463\\
-4 & 217 & 105 & 205 & 0 & 259 & 7884\\
+4 & 217 & 105 & 205 & 35000 & 259 & 7884\\
 5 & 513 & 135 & 1922 & 237 & 898 & 379\\
-6 & 92 & 0 & 169 & 1791 & 3015 & 1124\\
-7 & 0 & 172 & 755 & 2318 & 0 & 1111\\
+6 & 92 & 35000 & 169 & 1791 & 3015 & 1124\\
+7 & 35000 & 172 & 755 & 2318 & 35000 & 1111\\
 8 & 6748 & 170 & 124 & 226 & 1851 & 269\\
-9 & 842 & 338 & 313 & 0 & 2429 & 0\\
+9 & 842 & 338 & 313 & 35000 & 2429 & 35000\\
 10 & 75 & 155 & 7656 & 566 & 463 & 309\\
-11 & 49 & 466 & 0 & 193 & 258 & 383\\
-12 & 68 & 2233 & 123 & 0 & 121 & 719\\
+11 & 49 & 466 & 35000 & 193 & 258 & 383\\
+12 & 68 & 2233 & 123 & 35000 & 121 & 719\\
 13 & 344 & 1872 & 176 & 608 & 167 & 621\\
 14 & 43 & 80 & 289 & 98 & 388 & 250\\
 15 & 81 & 6862 & 5623 & 128 & 255 & 325\\
-16 & 128 & 69 & 179 & 234 & 214 & 0\\
-17 & 0 & 80 & 1077 & 8795 & 831 & 298\\
+16 & 128 & 69 & 179 & 234 & 214 & 35000\\
+17 & 35000 & 80 & 1077 & 8795 & 831 & 298\\
 18 & 3805 & 211 & 262 & 241 & 1386 & 273\\
 19 & 3100 & 186 & 110 & 192 & 949 & 617\\
-20 & 52 & 0 & 119 & 2885 & 365 & 341\\
+20 & 52 & 35000 & 119 & 2885 & 365 & 341\\
 21 & 151 & 87 & 483 & 152 & 596 & 1590\\
 22 & 3956 & 37137 & 308 & 197 & 223 & 387\\
-23 & 48 & 104 & 18465 & 232 & 0 & 1314\\
-24 & 83 & 123 & 0 & 122 & 12753 & 279\\
-25 & 3100 & 587 & 38938 & 0 & 489 & 171\\
+23 & 48 & 104 & 18465 & 232 & 35000 & 1314\\
+24 & 83 & 123 & 35000 & 122 & 12753 & 279\\
+25 & 3100 & 587 & 38938 & 35000 & 489 & 171\\
 26 & 310 & 130 & 181 & 697 & 479 & 676\\
 27 & 151 & 201 & 241 & 150 & 14169 & 6996\\
 28 & 204 & 212 & 543 & 243 & 1258 & 19315\\
 29 & 703 & 128 & 726 & 148 & 847 & 731\\
 30 & 16186 & 3912 & 321 & 241 & 565 & 2763\\
 31 & 185 & 182 & 430 & 199 & 2098 & 2420\\
-32 & 125 & 312 & 262 & 346 & 0 & 3022\\
-33 & 304 & 403 & 647 & 515 & 580 & 0\\
-34 & 61 & 539 & 102 & 798 & 0 & 0\\
-35 & 104 & 0 & 172 & 183 & 236 & 1562\\
-Mean & 1207.3143 & 1650.3714 & 2320.4571 & 863.97143 & 1415.5714 & 1840.2286\\
-Num of 0 & 2 & 3 & 3 & 4 & 4 & 4\\
+32 & 125 & 312 & 262 & 346 & 35000 & 3022\\
+33 & 304 & 403 & 647 & 515 & 580 & 35000\\
+34 & 61 & 539 & 102 & 798 & 35000 & 35000\\
+35 & 104 & 35000 & 172 & 183 & 236 & 1562\\
+Mean & 3207.3143 & 4650.3714 & 5320.4571 & 4863.9714 & 5415.5714 & 5840.2286\\
+Num of N/A & 2 & 3 & 3 & 4 & 4 & 4\\
 \end{tabular}
 \end{center}
 
-\begin{itemize}
-\item Because there are several time the program takes too long to reach the criteria, I have to cancel the training. So that causes troubles when compute the statistics.
-\item If I replace those unfinished training epochs with a reasonable large number, such as 50000
-\end{itemize}
-
-
+-Because sometimes it takes so long to reach the learning criteria, I have to cancel the training. And the cell in the table has record 35000 is the one has been marked as "N/A" in orgin. To compute the statistics, I replace those "N/A" with a relatively reasonable large epochs = 35000.
 
 \section{Discussion}
 \label{sec-4}
@@ -136,21 +131,24 @@ def initialize(self):
 \label{sec-5-2-2}
 When It runs, it will goes into a loop to wait the user's input:
 \begin{verbatim}
-Please input 0 - 5 to select:
+Please input 0 - 7 to select:
 1 : initialize
 2 : teach 100 epochs
-3 : teach to criteria
-4 : randomly select one patter to test
-5 : show weights
+3 : teach until accuracy >= 0.90 during testing
+4 : teach to criteria
+5 : randomly select one patter to test
+6 : show weights
+7 : run 100 test and collect training result
 0 : quit
+your choice =>
 \end{verbatim}
 
 \begin{enumerate}
 \item You need to first initialize the neural network
-\item Then, you could chose other options. Notice, the option 3 will train the neural network to learning criteria and it will not stop until it reaches there.
-\item Option 4, will randomly pick a patter from training dataset to see the output result of neural network.
+\item Then, you could chose other options. Notice, the option 3 and 4 will keep training the neural network until it reaches the pre-specific settings.
 \item If you want to start another training, you could restart the program or choose option 1 to reset the whole program to initial state.
 \end{enumerate}
+
 \section{Objectives}
 \label{sec-6}
 \subsection{Program}
