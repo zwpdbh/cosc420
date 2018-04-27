@@ -1,5 +1,106 @@
-#+TITLE: COSC420 Neural Network Assignment
+#+TITLE: COSC420 Neural Network Assignment Report
+#+latex_header: \usepackage{hyperref}
+#+latex_header: \usepackage{cleveref}
+#+latex_header: \usepackage{xcolor}
+#+latex_header: \usepackage{amsmath}
+#+latex_header: \hypersetup{colorlinks=true}
+#+AUTHOR: Zhao Wei
 
+* Introduction
+My neural network is a simple fully connected feedforward network with just one hidden layers. The number of input, hidden and output units can be specified through a param.txt file. It reads input pattern and teaching input pattern from input.txt and teaching_input.txt respectively. 
+
+This report describes the implementation of my neural network and some tests which uses the dataset from several datasets. 
+* Background
+My neural network is a fully connected. It implements the general delta rule for backpropagation. During initialization, if the number of patterns in data is 150(which is iris flow dataset), then it raondomly select 100 patterns as training dataset, the rest 50 patterns will be used as testing dataset. If the dataset is very simple one, it will not devide dataset into training and testing, since the dataset is so small, and we need every pattern in it to train. My training uses the online approache. It means the backpropagation will be done for every input pattern. Also I shuffle the dataset before every epoch.
+
+Since the main structure of the network is fixed, I mainly compare the different learning constant and its effect on the training result.
+* Experiment
+** Change the learning rate
+Learning rate plays an important role, since it appears in almost every machine learning algorithm. How to set it is based on some heuristic, so I want to see the effect of it on my neural network. I use the iris dataset, and collect training epochs while changing the learning rate with different value.
+
+The following table shows the epochs need to train my neural network to =criteria = 0.05= with different learning rate. Other parameters are the same including learning momentum is 0.9. There are 0 in the table, which indicate the learning takes too long to reach the criteria and I have to stop it.
+
+  |         id |     r=0.2 |    r=0.15 |     r=0.1 |    r=0.09 |    r=0.08 |    r=0.05 |
+  |------------+-----------+-----------+-----------+-----------+-----------+-----------|
+  |          1 |        66 |        55 |       117 |      5705 |       229 |      4441 |
+  |          2 |       183 |       301 |     35000 |      1571 |       864 |      2375 |
+  |          3 |       179 |       216 |       178 |       228 |       310 |      1463 |
+  |          4 |       217 |       105 |       205 |     35000 |       259 |      7884 |
+  |          5 |       513 |       135 |      1922 |       237 |       898 |       379 |
+  |          6 |        92 |     35000 |       169 |      1791 |      3015 |      1124 |
+  |          7 |     35000 |       172 |       755 |      2318 |     35000 |      1111 |
+  |          8 |      6748 |       170 |       124 |       226 |      1851 |       269 |
+  |          9 |       842 |       338 |       313 |     35000 |      2429 |     35000 |
+  |         10 |        75 |       155 |      7656 |       566 |       463 |       309 |
+  |         11 |        49 |       466 |     35000 |       193 |       258 |       383 |
+  |         12 |        68 |      2233 |       123 |     35000 |       121 |       719 |
+  |         13 |       344 |      1872 |       176 |       608 |       167 |       621 |
+  |         14 |        43 |        80 |       289 |        98 |       388 |       250 |
+  |         15 |        81 |      6862 |      5623 |       128 |       255 |       325 |
+  |         16 |       128 |        69 |       179 |       234 |       214 |     35000 |
+  |         17 |     35000 |        80 |      1077 |      8795 |       831 |       298 |
+  |         18 |      3805 |       211 |       262 |       241 |      1386 |       273 |
+  |         19 |      3100 |       186 |       110 |       192 |       949 |       617 |
+  |         20 |        52 |     35000 |       119 |      2885 |       365 |       341 |
+  |         21 |       151 |        87 |       483 |       152 |       596 |      1590 |
+  |         22 |      3956 |     37137 |       308 |       197 |       223 |       387 |
+  |         23 |        48 |       104 |     18465 |       232 |     35000 |      1314 |
+  |         24 |        83 |       123 |     35000 |       122 |     12753 |       279 |
+  |         25 |      3100 |       587 |     38938 |     35000 |       489 |       171 |
+  |         26 |       310 |       130 |       181 |       697 |       479 |       676 |
+  |         27 |       151 |       201 |       241 |       150 |     14169 |      6996 |
+  |         28 |       204 |       212 |       543 |       243 |      1258 |     19315 |
+  |         29 |       703 |       128 |       726 |       148 |       847 |       731 |
+  |         30 |     16186 |      3912 |       321 |       241 |       565 |      2763 |
+  |         31 |       185 |       182 |       430 |       199 |      2098 |      2420 |
+  |         32 |       125 |       312 |       262 |       346 |     35000 |      3022 |
+  |         33 |       304 |       403 |       647 |       515 |       580 |     35000 |
+  |         34 |        61 |       539 |       102 |       798 |     35000 |     35000 |
+  |         35 |       104 |     35000 |       172 |       183 |       236 |      1562 |
+  |       Mean | 1207.3143 | 1650.3714 | 2320.4571 | 863.97143 | 1415.5714 | 1840.2286 |
+  | Num of N/A |         2 |         3 |         3 |         4 |         4 |         4 |
+
+#+TBLFM: @37$7=vmean(@2..@36)
+
+-Because sometimes it   
+
+
+* Discussion
+Though the experiments on training my neural network, I notice several points:
+1) It is very hard to tell whether the training will reach the goal you set. During training, the popErr is decreasing but you couldn't not tell whether it will reach some level. That is why in the previous table, there are some cells is 0.
+2) Except learning criteria and learning rate, I found the inital values of weights is also very important. I finished the basic implementation of neural network relatively early, and the network always need a relative big number to reach the learning criteria. After I review my code, I found out during initialization, I randomly generate the weights between 0.1 and 0.75. After I change its range to [0.1, 0.95], the training of network can reach criteria very quickly. Especially on iris dataset, the training now can reach learning criteri in less 50 epochs.
+* Appendix
+The whole program is implemented with Python. It uses Numpy for dataset manipulation.
+** The component of the program
+- NeuralNetwork.py, is the model which contains the class NN for abstract a fully connected neural network.
+- main.py, is the controller. It contains the main entry point to call NN's different method based on user's input.
+- It also contains three .txt file for storing the information about parameters, input, and teaching input respectively.
+** Usage
+*** How to run the program
+Run =python ./main= on commmand-line.
+The program will try to load 3 files in the same directory: param.txt, input.txt and teaching_input.txt. You could also changes the corresponding part within code:
+#+BEGIN_SRC python
+   def initialize(self):
+       params = np.loadtxt('param.txt')
+       inputs = np.loadtxt('input.txt')
+       teachingInput = np.loadtxt('teaching_input.txt')
+#+END_SRC
+*** How to use the program
+When It runs, it will goes into a loop to wait the user's input:
+#+BEGIN_SRC sh
+  Please input 0 - 5 to select:
+  1 : initialize
+  2 : teach 100 epochs
+  3 : teach to criteria
+  4 : randomly select one patter to test
+  5 : show weights
+  0 : quit
+#+END_SRC
+
+1) You need to first initialize the neural network 
+2) Then, you could chose other options. Notice, the option 3 will train the neural network to learning criteria and it will not stop until it reaches there.
+3) Option 4, will randomly pick a patter from training dataset to see the output result of neural network.
+4) If you want to start another training, you could restart the program or choose option 1 to reset the whole program to initial state.
 * Objectives
 ** Program
 1) learn, print out the number of epochs and the current population error every 100 epochs.
@@ -27,78 +128,6 @@ The report should describe:
 4) Graphs and tables are very useful for summarising and presenting data.
 5) An appendix which provide an overview of how to use your program.
 
-* Program
-** What functions does my program need to have?
-- Be able to split the data into training set and testing set.
-- During trainning print out the epoches and population error for every 100 epochs.
-- After training, given an testing data, output the following:
-  1) current weights
-  2) current state of neurons (which including the output)
-
-
-* Experiments 
-- measure the execution time under the changes of the following criterion:
-  1) learning rate
-  2) momentum
-  3) learning_criterion
-
-- measure the execution time 
-
-** Use iris dataset as example to collect data
-- momentum = 0.9
-- criterion = 0.05
-Change learning rate to compare number of epoches needed
-|    id |     r=0.2 |    r=0.15 |     r=0.1 |    r=0.09 |    r=0.08 |
-|-------+-----------+-----------+-----------+-----------+-----------|
-|     1 |        66 |        55 |       117 |      5705 |       229 |
-|     2 |       183 |       301 |         0 |      1571 |       864 |
-|     3 |       179 |       216 |       178 |       228 |       310 |
-|     4 |       217 |       105 |       205 |         0 |       259 |
-|     5 |       513 |       135 |      1922 |       237 |       898 |
-|     6 |        92 |         0 |       169 |      1791 |      3015 |
-|     7 |         0 |       172 |       755 |      2318 |         0 |
-|     8 |      6748 |       170 |       124 |       226 |      1851 |
-|     9 |       842 |       338 |       313 |         0 |      2429 |
-|    10 |        75 |       155 |      7656 |       566 |       463 |
-|    11 |        49 |       466 |         0 |       193 |       258 |
-|    12 |        68 |      2233 |       123 |         0 |       121 |
-|    13 |       344 |      1872 |       176 |       608 |       167 |
-|    14 |        43 |        80 |       289 |        98 |       388 |
-|    15 |        81 |      6862 |      5623 |       128 |       255 |
-|    16 |       128 |        69 |       179 |       234 |       214 |
-|    17 |         0 |        80 |      1077 |      8795 |       831 |
-|    18 |      3805 |       211 |       262 |       241 |      1386 |
-|    19 |      3100 |       186 |       110 |       192 |       949 |
-|    20 |        52 |         0 |       119 |      2885 |       365 |
-|    21 |       151 |        87 |       483 |       152 |       596 |
-|    22 |      3956 |     37137 |       308 |       197 |       223 |
-|    23 |        48 |       104 |     18465 |       232 |         0 |
-|    24 |        83 |       123 |         0 |       122 |     12753 |
-|    25 |      3100 |       587 |     38938 |         0 |       489 |
-|    26 |       310 |       130 |       181 |       697 |       479 |
-|    27 |       151 |       201 |       241 |       150 |     14169 |
-|    28 |       204 |       212 |       543 |       243 |      1258 |
-|    29 |       703 |       128 |       726 |       148 |       847 |
-|    30 |     16186 |      3912 |       321 |       241 |       565 |
-|    31 |       185 |       182 |       430 |       199 |      2098 |
-|    32 |       125 |       312 |       262 |       346 |         0 |
-|    33 |       304 |       403 |       647 |       515 |       580 |
-|    34 |        61 |       539 |       102 |       798 |         0 |
-|    35 |       104 |         0 |       172 |       183 |       236 |
-|       | 1207.3143 | 1650.3714 | 2320.4571 | 863.97143 | 1415.5714 |
 
 
 
-
-#+TBLFM: @37$2=vmean(@2..@36)::@37$3=vmean(@2..@36::@37$4=vmean(@2..@36)::@37$5=vmean(@2..@36)::@37$6=vmean(@2..@36)
-
-
-- special case
-  - epoch = 24700, popErr = 0.060154, for learning_rate = 0.2, no sign of converge
-*** encoder decoder result 
-- param
-  - 8 3 8
-  - change learning rate
-  - learning criteria = 0.05
-| constant | run1 | run2 | run3 | run4 | run5 | run6 | run7 | run8 | run9 | run10 |
-|     0.15 |      |      |      |      |      |      |      |      |      |       |

@@ -1,0 +1,195 @@
+% Created 2018-04-27 Fri 13:06
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\hypersetup{colorlinks=true}
+\author{Zhao Wei}
+\date{\today}
+\title{COSC420 Neural Network Assignment Report}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 25.3.1 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+
+\section{Introduction}
+\label{sec-1}
+My neural network is a simple fully connected feedforward network with just one hidden layers. The number of input, hidden and output units can be specified through a param.txt file. It reads input pattern and teaching input pattern from input.txt and teaching$_{\text{input}}$.txt respectively. 
+
+This report describes the implementation of my neural network and some tests which uses the dataset from several datasets. 
+\section{Background}
+\label{sec-2}
+My neural network is a fully connected. It implements the general delta rule for backpropagation. During initialization, if the number of patterns in data is 150(which is iris flow dataset), then it raondomly select 100 patterns as training dataset, the rest 50 patterns will be used as testing dataset. If the dataset is very simple one, it will not devide dataset into training and testing, since the dataset is so small, and we need every pattern in it to train. My training uses the online approache. It means the backpropagation will be done for every input pattern. Also I shuffle the dataset before every epoch.
+
+Since the main structure of the network is fixed, I mainly compare the different learning constant and its effect on the training result.
+\section{Experiment}
+\label{sec-3}
+\subsection{Change the learning rate}
+\label{sec-3-1}
+Learning rate plays an important role, since it appears in almost every machine learning algorithm. How to set it is based on some heuristic, so I want to see the effect of it on my neural network. I use the iris dataset, and collect training epochs while changing the learning rate with different value.
+
+The following table shows the epochs need to train my neural network to \texttt{criteria = 0.05} with different learning rate. Other parameters are the same including learning momentum is 0.9. There are 0 in the table, which indicate the learning takes too long to reach the criteria and I have to stop it.
+
+\begin{center}
+\begin{tabular}{rrrrrrr}
+id & r=0.2 & r=0.15 & r=0.1 & r=0.09 & r=0.08 & r=0.05\\
+\hline
+1 & 66 & 55 & 117 & 5705 & 229 & 4441\\
+2 & 183 & 301 & 0 & 1571 & 864 & 2375\\
+3 & 179 & 216 & 178 & 228 & 310 & 1463\\
+4 & 217 & 105 & 205 & 0 & 259 & 7884\\
+5 & 513 & 135 & 1922 & 237 & 898 & 379\\
+6 & 92 & 0 & 169 & 1791 & 3015 & 1124\\
+7 & 0 & 172 & 755 & 2318 & 0 & 1111\\
+8 & 6748 & 170 & 124 & 226 & 1851 & 269\\
+9 & 842 & 338 & 313 & 0 & 2429 & 0\\
+10 & 75 & 155 & 7656 & 566 & 463 & 309\\
+11 & 49 & 466 & 0 & 193 & 258 & 383\\
+12 & 68 & 2233 & 123 & 0 & 121 & 719\\
+13 & 344 & 1872 & 176 & 608 & 167 & 621\\
+14 & 43 & 80 & 289 & 98 & 388 & 250\\
+15 & 81 & 6862 & 5623 & 128 & 255 & 325\\
+16 & 128 & 69 & 179 & 234 & 214 & 0\\
+17 & 0 & 80 & 1077 & 8795 & 831 & 298\\
+18 & 3805 & 211 & 262 & 241 & 1386 & 273\\
+19 & 3100 & 186 & 110 & 192 & 949 & 617\\
+20 & 52 & 0 & 119 & 2885 & 365 & 341\\
+21 & 151 & 87 & 483 & 152 & 596 & 1590\\
+22 & 3956 & 37137 & 308 & 197 & 223 & 387\\
+23 & 48 & 104 & 18465 & 232 & 0 & 1314\\
+24 & 83 & 123 & 0 & 122 & 12753 & 279\\
+25 & 3100 & 587 & 38938 & 0 & 489 & 171\\
+26 & 310 & 130 & 181 & 697 & 479 & 676\\
+27 & 151 & 201 & 241 & 150 & 14169 & 6996\\
+28 & 204 & 212 & 543 & 243 & 1258 & 19315\\
+29 & 703 & 128 & 726 & 148 & 847 & 731\\
+30 & 16186 & 3912 & 321 & 241 & 565 & 2763\\
+31 & 185 & 182 & 430 & 199 & 2098 & 2420\\
+32 & 125 & 312 & 262 & 346 & 0 & 3022\\
+33 & 304 & 403 & 647 & 515 & 580 & 0\\
+34 & 61 & 539 & 102 & 798 & 0 & 0\\
+35 & 104 & 0 & 172 & 183 & 236 & 1562\\
+Mean & 1207.3143 & 1650.3714 & 2320.4571 & 863.97143 & 1415.5714 & 1840.2286\\
+Num of 0 & 2 & 3 & 3 & 4 & 4 & 4\\
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item Because there are several time the program takes too long to reach the criteria, I have to cancel the training. So that causes troubles when compute the statistics.
+\item If I replace those unfinished training epochs with a reasonable large number, such as 50000
+\end{itemize}
+
+
+
+\section{Discussion}
+\label{sec-4}
+Though the experiments on training my neural network, I notice several points:
+\begin{enumerate}
+\item It is very hard to tell whether the training will reach the goal you set. During training, the popErr is decreasing but you couldn't not tell whether it will reach some level. That is why in the previous table, there are some cells is 0.
+\item Except learning criteria and learning rate, I found the inital values of weights is also very important. I finished the basic implementation of neural network relatively early, and the network always need a relative big number to reach the learning criteria. After I review my code, I found out during initialization, I randomly generate the weights between 0.1 and 0.75. After I change its range to [0.1, 0.95], the training of network can reach criteria very quickly. Especially on iris dataset, the training now can reach learning criteri in less 50 epochs.
+\end{enumerate}
+\section{Appendix}
+\label{sec-5}
+The whole program is implemented with Python. It uses Numpy for dataset manipulation.
+\subsection{The component of the program}
+\label{sec-5-1}
+\begin{itemize}
+\item NeuralNetwork.py, is the model which contains the class NN for abstract a fully connected neural network.
+\item main.py, is the controller. It contains the main entry point to call NN's different method based on user's input.
+\item It also contains three .txt file for storing the information about parameters, input, and teaching input respectively.
+\end{itemize}
+\subsection{Usage}
+\label{sec-5-2}
+\subsubsection{How to run the program}
+\label{sec-5-2-1}
+Run \texttt{python ./main} on commmand-line.
+The program will try to load 3 files in the same directory: param.txt, input.txt and teaching$_{\text{input}}$.txt. You could also changes the corresponding part within code:
+\begin{verbatim}
+def initialize(self):
+    params = np.loadtxt('param.txt')
+    inputs = np.loadtxt('input.txt')
+    teachingInput = np.loadtxt('teaching_input.txt')
+\end{verbatim}
+\subsubsection{How to use the program}
+\label{sec-5-2-2}
+When It runs, it will goes into a loop to wait the user's input:
+\begin{verbatim}
+Please input 0 - 5 to select:
+1 : initialize
+2 : teach 100 epochs
+3 : teach to criteria
+4 : randomly select one patter to test
+5 : show weights
+0 : quit
+\end{verbatim}
+
+\begin{enumerate}
+\item You need to first initialize the neural network
+\item Then, you could chose other options. Notice, the option 3 will train the neural network to learning criteria and it will not stop until it reaches there.
+\item Option 4, will randomly pick a patter from training dataset to see the output result of neural network.
+\item If you want to start another training, you could restart the program or choose option 1 to reset the whole program to initial state.
+\end{enumerate}
+\section{Objectives}
+\label{sec-6}
+\subsection{Program}
+\label{sec-6-1}
+\begin{enumerate}
+\item learn, print out the number of epochs and the current population error every 100 epochs.
+\item test, enable he user to test the population of input patterns add see the activation of all units.
+\item show weights
+\end{enumerate}
+
+\subsection{Questions need to answer}
+\label{sec-6-2}
+\begin{enumerate}
+\item How well/quickly does the network learn different kinds of tasks?
+\item How do the parameter settings affect the learning process?
+\item How robuts/stable is its performance in the face of noise (in the data) or damange (to the network)?
+\item How well does it generalizes from a small grianning set to a larger data set from which the trainning set was a sample?
+\item Find suggestions in the lectures or literature for improving generalization and explore them.
+\item How much training is "enough"?
+\item What is the right size for a neural network?
+\end{enumerate}
+
+\subsection{Report}
+\label{sec-6-3}
+The report should describe:
+\begin{enumerate}
+\item the design of your network, noting the alternative designs that you considered.
+\begin{itemize}
+\item such as, a range of different error functions
+\end{itemize}
+\item the results of your tests
+\begin{itemize}
+\item the test you decide to perform
+\item why these are interesting (what questions do they explore)
+\item The result should be presented with discussion, what have you learned, have you answered your original questions?
+\end{itemize}
+\item explorations
+\item Graphs and tables are very useful for summarising and presenting data.
+\item An appendix which provide an overview of how to use your program.
+\end{enumerate}
+% Emacs 25.3.1 (Org mode 8.2.10)
+\end{document}

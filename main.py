@@ -1,17 +1,23 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from NeuralNetwork import NN
+
 
 class Controller:
     def __init__(self):
         pass
 
     def show_menu(self):
+        self.accuracy_criteria = 0.90
         print("\nPlease input 0 - 5 to select:")
         print("1 : initialize")
-        print("2 : teach 100 epochs")
-        print("3 : teach to criteria")
-        print("4 : randomly select one patter to test")
-        print("5 : show weights")
+        print("2 : teach until accuracy >= %.2f during testing" % self.accuracy_criteria)
+        print("3 : teach 100 epochs")
+        print("4 : teach to criteria")
+        print("5 : randomly select one patter to test")
+        print("6 : show weights")
+        print("7 : run 100 test and collect training result")
+        print("8 : testPlot")
         print("0 : quit")
 
     def initialize(self):
@@ -24,9 +30,15 @@ class Controller:
         # teachingInput = np.loadtxt('encoder_teaching_input.txt')
 
         self.logFile = open('logfile.txt', 'w')
-
+        self.test_T = 0.0
+        self.test_F = 0.0
+        self.accuracy = 0.0
+        self.fit_criteria = 0.40
         self.nn = NN(params, inputs, teachingInput)
         self.nn.initializeWeights()
+        self.popErr_record = []
+        self.accuracy_record = []
+        self.epoch_record = []
 
         print("Initialization complete, current settings are:")
         print("the number of inputNeurons = %d" % self.nn.inputNeurons.shape[0])
@@ -48,6 +60,7 @@ class Controller:
             self.training_set = self.nn.dataset
             self.testing_set = self.nn.dataset
 
+
     def quit(self):
         if not self.logFile.close():
             self.logFile.close()
@@ -61,7 +74,6 @@ class Controller:
             self.popErr = self.nn.train(self.training_set)
             self.totalEpochs += 1
             count += 1
-
         print("epoch = %d, popErr = %.6f" % (self.totalEpochs, self.popErr))
         if not self.logFile.close():
             self.logFile.close()
@@ -83,6 +95,71 @@ class Controller:
         if not self.logFile.close():
             self.logFile.close()
 
+    def run100TestAndCollectData(self):
+        for _ in xrange(100):
+            self.test()
+        self.test_total = self.test_T + self.test_F
+        self.accuracy = self.test_T / self.test_total
+        print("the accuracy = %d / %d = %.3f" % (self.test_T, self.test_total,  self.accuracy))
+
+    def testPlot(self):
+        for i in xrange(1000):
+            self.epoch_record.append(i)
+            self.popErr_record.append(0.5)
+            self.accuracy_record.append(0.2)
+        plt.subplot(211)
+        plt.xlabel("epochs")
+        plt.ylabel("popErr")
+        plt.grid(True)
+        plt.plot(self.epoch_record, self.popErr_record)
+        plt.subplot(212)
+        plt.xlabel("epochs")
+        plt.ylabel("accuracy")
+        plt.grid(True)
+        plt.plot(self.epoch_record, self.accuracy_record)
+        plt.show()
+
+    def teachToAccuracy(self):
+        while self.accuracy <= self.accuracy_criteria:
+            self.teach100Epoch()
+            for _ in xrange(100):
+                np.random.shuffle(self.testing_set)
+                pattern = self.testing_set[0]
+                input = pattern[:self.nn.num_of_inputAttr]
+                i = self.nn.num_of_outputAttr
+                j = pattern.shape[0]
+                teaching_input = pattern[-i:j]
+
+                self.nn.compute_forward(input)
+
+                correct = True
+                for i in xrange(self.nn.num_of_outputAttr):
+                    if abs(teaching_input[i] - self.nn.outputNeurons[i]) > self.fit_criteria:
+                        correct = False
+                        break
+                if correct:
+                    self.test_T += 1
+                else:
+                    self.test_F += 1
+            self.test_total = self.test_T + self.test_F
+            self.accuracy = self.test_T / self.test_total
+            print("during testing, the popErr = %.6f, the accuracy = %.3f, continue" % (self.popErr, self.accuracy))
+            self.popErr_record.append(self.popErr)
+            self.accuracy_record.append(self.accuracy)
+            self.epoch_record.append(self.totalEpochs)
+        print("Epoch = %d, Accuracy = %.3f" % (self.totalEpochs, self.accuracy))
+        plt.subplot(211)
+        plt.xlabel("epochs")
+        plt.ylabel("popErr")
+        plt.grid(True)
+        plt.plot(self.epoch_record, self.popErr_record)
+        plt.subplot(212)
+        plt.xlabel("epochs")
+        plt.ylabel("accuracy")
+        plt.grid(True)
+        plt.plot(self.epoch_record, self.accuracy_record)
+        plt.show()
+
     def test(self):
         np.random.shuffle(self.testing_set)
         pattern = self.testing_set[0]
@@ -96,6 +173,18 @@ class Controller:
         self.nn.compute_forward(input)
         # the transpose and index slice is used to make display format be nice
         print("the output is: " + str(self.nn.outputNeurons.T[0]))
+
+        correct = True
+        for i in xrange(self.nn.num_of_outputAttr):
+            if abs(teaching_input[i] - self.nn.outputNeurons[i]) > self.fit_criteria:
+                correct = False
+                print("the differences between corresponding attribute is > 0.45, so decide it is False.")
+                break
+        if correct:
+            print("the differences between corresponding attribute are all <= 0.45, so decide it is True.")
+            self.test_T += 1
+        else:
+            self.test_F += 1
 
     def checkWeights(self):
         print("\n==weights between input and hidden layer are==")
@@ -116,13 +205,19 @@ if __name__ == '__main__':
         if selected == 1:
             controller.initialize()
         elif selected == 2:
-            controller.teach100Epoch()
+            controller.teachToAccuracy()
         elif selected == 3:
-            controller.teachToCriteria()
+            controller.teach100Epoch()
         elif selected == 4:
-            controller.test()
+            controller.teachToCriteria()
         elif selected == 5:
+            controller.test()
+        elif selected == 6:
             controller.checkWeights()
+        elif selected == 7:
+            controller.run100TestAndCollectData()
+        elif selected == 8:
+            controller.testPlot()
         elif selected == 0:
             controller.quit()
         else:
