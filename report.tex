@@ -1,4 +1,4 @@
-% Created 2018-04-28 Sat 20:51
+% Created 2018-04-28 Sat 22:14
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -57,7 +57,7 @@ Table \ref{table-epochs-needed} shows the epochs needed to train my neural netwo
 \caption{table shows the epochs needed to reach a popErr criteria, with different learning rate.  \label{table-epochs-needed}}
 \centering
 \begin{tabular}{rrrrrrr}
-id & r=0.2 & r=0.15 & r=0.1 & r=0.09 & r=0.08 & r=0.05\\
+id & r=0.2 & r=0.15 & r=0.13 & r=0.11 & r=0.08 & r=0.05\\
 \hline
 1 & 66 & 55 & 117 & 5705 & 229 & 4441\\
 2 & 183 & 301 & N/A & 1571 & 864 & 2375\\
@@ -95,15 +95,20 @@ id & r=0.2 & r=0.15 & r=0.1 & r=0.09 & r=0.08 & r=0.05\\
 34 & 61 & 539 & 102 & 798 & N/A & N/A\\
 35 & 104 & N/A & 172 & 183 & 236 & 1562\\
 \hline
-Num of N/A & 2 & 3 & 3 & 4 & 4 & 4\\
-Mean &  &  &  &  &  & \\
+Times of N/A & 2 & 3 & 3 & 4 & 4 & 4\\
+Mean & 663.138 & 371.077 & 608.769 & 436.522 & 715.391 & 1078.652\\
 \end{tabular}
 \end{table}
 
 \begin{itemize}
 \item Because sometimes it shows no signs to reach the learning criteria, I have to cancel the training. And the corresponding cell in the table has recorded as N/A.
 \item To collect the statistics, I get rid of corresponding number of N/A for minimum and maximum epochs in the each column. For example, there are 2 N/A for r=0.2, so when I compute the average epochs, I will not consider the two smallest and two maximum epochs in r=0.2 column.
-\item The final average value is filled in the final row.
+\item The final average value is filled in the final row. If we plot it out, it is show in figure \ref{fig-average-epochs}. It shows the general average epochs is increase while decreasing the learning rate.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=.9\linewidth]{./average_epochs.png}
+\caption{shows average epochs needed to reach popErr = 0.05 for training on iris dataset with 6 hidden units \label{fig-average-epochs}}
+\end{figure}
 \end{itemize}
 
 
