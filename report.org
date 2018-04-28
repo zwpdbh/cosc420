@@ -11,63 +11,127 @@ My neural network is a simple fully connected feedforward network with just one 
 
 This report describes the implementation of my neural network and some tests which uses the dataset from several datasets. 
 * Background
-My neural network is a fully connected. It implements the general delta rule for backpropagation. During initialization, if the number of patterns in data is 150(which is iris flow dataset), then it raondomly select 100 patterns as training dataset, the rest 50 patterns will be used as testing dataset. If the dataset is very simple one, it will not devide dataset into training and testing, since the dataset is so small, and we need every pattern in it to train. My training uses the online approache. It means the backpropagation will be done for every input pattern. Also I shuffle the dataset before every epoch.
+My neural network is a fully connected. It implements the general delta rule for backpropagation and uses sigmoid function as activation function. During initialization, if the number of patterns in data is 150(which is iris flow dataset), then it raondomly select 100 patterns as training dataset, the rest 50 patterns will be used as testing dataset. If the dataset is very simple one, it will not devide dataset into training and testing, since the dataset is so small, and we need every pattern in it to train. My training uses the online approache. It means the backpropagation will be done for every input pattern. Also I shuffle the dataset before every epoch.
 
-Since the main structure of the network is fixed, I mainly compare the different learning constant and its effect on the training result.
+Since the main structure of the network is mearly fixed. My experiments focus on the changes of learning rate, number of hidden units and using testing accuracy as learning criteria.
+
 * Experiment
 ** Change the learning rate
 Learning rate plays an important role, since it appears in almost every machine learning algorithm. How to set it is based on some heuristic, so I want to see the effect of it on my neural network. I use the iris dataset, and collect training epochs while changing the learning rate with different value.
 
-The following table shows the epochs need to train my neural network to =criteria = 0.05= with different learning rate. Other parameters are the same including learning momentum is 0.9. There are 0 in the table, which indicate the learning takes too long to reach the criteria and I have to stop it.
+Table ref:table-epochs-needed shows the epochs needed to train my neural network to =learning_criteria (popErr) = 0.05= with different learning rate on iris dataset. Other parameters are the same including learning momentum is 0.9.
 
-  |         id |     r=0.2 |    r=0.15 |     r=0.1 |    r=0.09 |    r=0.08 |    r=0.05 |
-  |------------+-----------+-----------+-----------+-----------+-----------+-----------|
-  |          1 |        66 |        55 |       117 |      5705 |       229 |      4441 |
-  |          2 |       183 |       301 |     35000 |      1571 |       864 |      2375 |
-  |          3 |       179 |       216 |       178 |       228 |       310 |      1463 |
-  |          4 |       217 |       105 |       205 |     35000 |       259 |      7884 |
-  |          5 |       513 |       135 |      1922 |       237 |       898 |       379 |
-  |          6 |        92 |     35000 |       169 |      1791 |      3015 |      1124 |
-  |          7 |     35000 |       172 |       755 |      2318 |     35000 |      1111 |
-  |          8 |      6748 |       170 |       124 |       226 |      1851 |       269 |
-  |          9 |       842 |       338 |       313 |     35000 |      2429 |     35000 |
-  |         10 |        75 |       155 |      7656 |       566 |       463 |       309 |
-  |         11 |        49 |       466 |     35000 |       193 |       258 |       383 |
-  |         12 |        68 |      2233 |       123 |     35000 |       121 |       719 |
-  |         13 |       344 |      1872 |       176 |       608 |       167 |       621 |
-  |         14 |        43 |        80 |       289 |        98 |       388 |       250 |
-  |         15 |        81 |      6862 |      5623 |       128 |       255 |       325 |
-  |         16 |       128 |        69 |       179 |       234 |       214 |     35000 |
-  |         17 |     35000 |        80 |      1077 |      8795 |       831 |       298 |
-  |         18 |      3805 |       211 |       262 |       241 |      1386 |       273 |
-  |         19 |      3100 |       186 |       110 |       192 |       949 |       617 |
-  |         20 |        52 |     35000 |       119 |      2885 |       365 |       341 |
-  |         21 |       151 |        87 |       483 |       152 |       596 |      1590 |
-  |         22 |      3956 |     37137 |       308 |       197 |       223 |       387 |
-  |         23 |        48 |       104 |     18465 |       232 |     35000 |      1314 |
-  |         24 |        83 |       123 |     35000 |       122 |     12753 |       279 |
-  |         25 |      3100 |       587 |     38938 |     35000 |       489 |       171 |
-  |         26 |       310 |       130 |       181 |       697 |       479 |       676 |
-  |         27 |       151 |       201 |       241 |       150 |     14169 |      6996 |
-  |         28 |       204 |       212 |       543 |       243 |      1258 |     19315 |
-  |         29 |       703 |       128 |       726 |       148 |       847 |       731 |
-  |         30 |     16186 |      3912 |       321 |       241 |       565 |      2763 |
-  |         31 |       185 |       182 |       430 |       199 |      2098 |      2420 |
-  |         32 |       125 |       312 |       262 |       346 |     35000 |      3022 |
-  |         33 |       304 |       403 |       647 |       515 |       580 |     35000 |
-  |         34 |        61 |       539 |       102 |       798 |     35000 |     35000 |
-  |         35 |       104 |     35000 |       172 |       183 |       236 |      1562 |
-  |       Mean | 3207.3143 | 4650.3714 | 5320.4571 | 4863.9714 | 5415.5714 | 5840.2286 |
-  | Num of N/A |         2 |         3 |         3 |         4 |         4 |         4 |
+#+CAPTION: table shows the epochs needed to reach a popErr criteria, with different learning rate.  label:table-epochs-needed
+  |         id | r=0.2 | r=0.15 | r=0.1 | r=0.09 | r=0.08 | r=0.05 |
+  |------------+-------+--------+-------+--------+--------+--------|
+  |          1 |    66 |     55 |   117 |   5705 |    229 |   4441 |
+  |          2 |   183 |    301 |   N/A |   1571 |    864 |   2375 |
+  |          3 |   179 |    216 |   178 |    228 |    310 |   1463 |
+  |          4 |   217 |    105 |   205 |    N/A |    259 |   7884 |
+  |          5 |   513 |    135 |  1922 |    237 |    898 |    379 |
+  |          6 |    92 |    N/A |   169 |   1791 |   3015 |   1124 |
+  |          7 |   N/A |    172 |   755 |   2318 |    N/A |   1111 |
+  |          8 |  6748 |    170 |   124 |    226 |   1851 |    269 |
+  |          9 |   842 |    338 |   313 |    N/A |   2429 |    N/A |
+  |         10 |    75 |    155 |  7656 |    566 |    463 |    309 |
+  |         11 |    49 |    466 |   N/A |    193 |    258 |    383 |
+  |         12 |    68 |   2233 |   123 |    N/A |    121 |    719 |
+  |         13 |   344 |   1872 |   176 |    608 |    167 |    621 |
+  |         14 |    43 |     80 |   289 |     98 |    388 |    250 |
+  |         15 |    81 |   6862 |  5623 |    128 |    255 |    325 |
+  |         16 |   128 |     69 |   179 |    234 |    214 |    N/A |
+  |         17 |   N/A |     80 |  1077 |   8795 |    831 |    298 |
+  |         18 |  3805 |    211 |   262 |    241 |   1386 |    273 |
+  |         19 |  3100 |    186 |   110 |    192 |    949 |    617 |
+  |         20 |    52 |    N/A |   119 |   2885 |    365 |    341 |
+  |         21 |   151 |     87 |   483 |    152 |    596 |   1590 |
+  |         22 |  3956 |  37137 |   308 |    197 |    223 |    387 |
+  |         23 |    48 |    104 | 18465 |    232 |    N/A |   1314 |
+  |         24 |    83 |    123 |   N/A |    122 |  12753 |    279 |
+  |         25 |  3100 |    587 | 38938 |    N/A |    489 |    171 |
+  |         26 |   310 |    130 |   181 |    697 |    479 |    676 |
+  |         27 |   151 |    201 |   241 |    150 |  14169 |   6996 |
+  |         28 |   204 |    212 |   543 |    243 |   1258 |  19315 |
+  |         29 |   703 |    128 |   726 |    148 |    847 |    731 |
+  |         30 | 16186 |   3912 |   321 |    241 |    565 |   2763 |
+  |         31 |   185 |    182 |   430 |    199 |   2098 |   2420 |
+  |         32 |   125 |    312 |   262 |    346 |    N/A |   3022 |
+  |         33 |   304 |    403 |   647 |    515 |    580 |    N/A |
+  |         34 |    61 |    539 |   102 |    798 |    N/A |    N/A |
+  |         35 |   104 |    N/A |   172 |    183 |    236 |   1562 |
+  |------------+-------+--------+-------+--------+--------+--------|
+  | Num of N/A |     2 |      3 |     3 |      4 |      4 |      4 |
+  |       Mean |       |        |       |        |        |        |
 
-#+TBLFM: @37$2=vmean(@2..@36)::@37$3=vmean(@2..@36)::@37$4=vmean(@2..@36)::@37$5=vmean(@2..@36)::@37$6=vmean(@2..@36)::@37$7=vmean(@2..@36)
-- Because sometimes it takes so long to reach the learning criteria, I have to cancel the training. And the cell in the table has record 35000 is the one has been marked as "N/A" in orgin. To compute the statistics, I replace those "N/A" with a relatively reasonable large epochs = 35000.
-- From the 
+#+TBLFM: @37$2=vmean(@2..@36)::@37$3=vmean(@2..@36)::@37$4=vmean(@2..@36)::@37$5=vmean(@2..@36)::@37$6=vmean(@2..@36)::@37$7=vmean(@2..@36)::@38$2=vsum(@2..@36)::@38$3=vsum(@2..@36)::@38$4=vsum(@2..@36)::@38$5=vsum(@2..@36)::@38$6=vsum(@2..@36)::@38$7=vsum(@2..@36)
+- Because sometimes it shows no signs to reach the learning criteria, I have to cancel the training. And the corresponding cell in the table has recorded as N/A.
+- To collect the statistics, I get rid of corresponding number of N/A for minimum and maximum epochs in the each column. For example, there are 2 N/A for r=0.2, so when I compute the average epochs, I will not consider the two smallest and two maximum epochs in r=0.2 column.
+- The final average value is filled in the final row.
+
+
+*** Using testing accuracy as criteria
+Though dozens of experiments, I found out the popErr sometimes could not represent the real effect of learning. After all, we need to generalize well on the training set to confirm the neural network is working which is evaluated by the testing accuracy.  
+
+So, using popErr as learning criteria is not sufficient. Furthermore, a small changes on the popErr could result a big accuracy improvement or even sometimes, the high accuracy does not appear at the lowest popErr, see figure ref:fig-iris-low-poperr-high-accuracy.
+#+caption: training on iris dataset, shows lower popErr does not perfectly match high accuracy label:fig-iris-low-poperr-high-accuracy
+[[./popErr_vs_accuracy_on_iris_oscillate02.png]]
+
+Before collecting the testing accuracy, I need to define what is True or False for my learning output. Because the teaching input is integer vector which is used to define classes, there will always some differences between my NN's output and the ground truth. So I define a fit criteria = 0.4, it means if the corresponding attribute between teaching input and NN's out is greater than 0.4, I consider the output is False. For example, during testing I randomly pick a pattern and compare the corresponding attribute difference:
+#+BEGIN_SRC sh
+  the input is: [0.137 0.584 0.102 0.043]
+  the teaching input is: [1. 0. 0.]
+  the output is: [0.84735159 0.45242708 0.00200901]
+  the differences between corresponding attribute is > 0.45, so decide it is False.
+#+END_SRC
+
+This simple scheme will help me to compare the proportion of each attribute to decide if it is a correct classification. The reason this works because in the teaching input, there is only 1 attribute will be marked as 1 and the rest is 0.
+
+The accuracy is computed by (the number of True) / (the number of total tested patters). In my program, I will randomly select 100 patterns from testing set. By using testing accuracy as the learning criteria, it alleviates the problem of adjusting the small popErr.
+
+** Change the number of hidden units
+Though experiment, I can feel that the number of hidden units indeed plays the key role. It controls the ability of abstracting the patters from environment.
+*** Change the number of hidden units for encoder/decoder dataset
+When I first use default setting to train encoder/decoder dataset (8:3:8), the popErr is aproaching to 0.095 and accurary is around 0.125. That means my neural network is almost not learning.
+
+However, When I increase the number of hidden units to 8. The popErr and accuracy can be improved to a satisfactory level ,see figure ref:fig-coder-8hidden.
+
+#+caption: learning result on the encoder/decoder dataset label:fig-coder-8hidden
+[[./popErr_vs_accuracy_on_coder.png]]
+
+
+*** Change the number of hidden units for iris dataset
+It is same for iris dataset. When I increases the number of hidden units, it becomes easier to gain a better accurary and lower popErr.
+- For using default 3 hidden units, the training is very slow. I could get a small popErr, but it is not enough to get a high accuracy. The accuracy is around 0.53 ~ 0.67 and could not be improved during training.
+- For using 6 hidden units, the training could be much faster to reach the testing accuracy
+  #+caption: training on iris dataset, with 6 hidden units, learning rate = 0.3 label:fig-iris-6hidden-larger-learning-rate
+  [[./popErr_vs_accuracy_on_iris_6hidden_0.3r.png]]
+- In some cases, even small learning rate can train quickly to get good accuracy, see figure ref:fig-iris-6hidden-quick-learn.
+  #+caption: sometimes the network could be trained very quickly using a small learning rate label:fig-iris-6hidden-quick-learn
+  [[./popErr_vs_accuracy_on_iris_very_quickly.png]]
 
 * Discussion
 Though the experiments on training my neural network, I notice several points:
-1) It is very hard to tell whether the training will reach the goal you set. During training, the popErr is decreasing but you couldn't not tell whether it will reach some level. That is why in the previous table, there are some cells is 0.
-2) Except learning criteria and learning rate, I found the inital values of weights is also very important. I finished the basic implementation of neural network relatively early, and the network always need a relative big number to reach the learning criteria. After I review my code, I found out during initialization, I randomly generate the weights between 0.1 and 0.75. After I change its range to [0.1, 0.95], the training of network can reach criteria very quickly. Especially on iris dataset, the training now can reach learning criteri in less 50 epochs.
+1) Larger learning rate can reduce popErr faster than smaller learning rate.
+2) However, popErr is hard to used a learning criteria, so I defined the testing accuracy criteria. And find out smaller learning rate can usually reach high accuracy. The reason is to get a high accuracy, the popErr need to be reduced to a smaller value, but big learning rate make the neural network oscillate on the error surface and could not settle down to the minimum.
+3) Increase the number of hidden units could boost the learning capacity of neural network. Though my experiments it is clear to see that without the extra number of hidden units a high accuracy could not be reached.
+4) The initial state of neural network is very important. Sometimes, same settings with different initial weights will behave very differently. For example, the epochs needed to train neural network to a high accuracy with same settings could be very different, see table ref:table-epochs-variance-on-iris.
+#+CAPTION: table shows the big variance of training epochs of training to accuracy = 0.9 on iris dataset with 6 hidden units label:table-epochs-variance-on-iris
+   | id | learning rate = 0.09 |
+   |----+----------------------|
+   |  1 |                 1000 |
+   |  2 |                  900 |
+   |  3 |                 2800 |
+   |  4 |                22100 |
+   |  5 |                  300 |
+   |  6 |                 2000 |
+   |  7 |                 1400 |
+   |  8 |                10300 |
+   |  9 |                 1500 |
+   | 10 |                 1400 |
+   |----+----------------------|
+
+In general, it is useful to define different kinds of method to guid the network training, to reach a result you expected. But it is hard to speicify a uniform rule so that as long as you follow that you could reach the goal. Moreover, if the training of neural network is like walking on the error surpace to reach the global lowest place, then whether you could reach there not only depend on the method you used, but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs.
+
 * Appendix
 The whole program is implemented with Python. It uses Numpy for dataset manipulation.
 ** The component of the program
@@ -87,7 +151,7 @@ The program will try to load 3 files in the same directory: param.txt, input.txt
 *** How to use the program
 When It runs, it will goes into a loop to wait the user's input:
 #+BEGIN_SRC sh
-  Please input 0 - 7 to select:
+  Please input 0 - 9 to select:
   1 : initialize
   2 : teach 100 epochs
   3 : teach until accuracy >= 0.90 during testing
@@ -95,41 +159,14 @@ When It runs, it will goes into a loop to wait the user's input:
   5 : randomly select one patter to test
   6 : show weights
   7 : run 100 test and collect training result
+  8 : check hidden units
+  9 : check settings without re-initialize the net
   0 : quit
-  your choice =>
+  your choice => 
+
 #+END_SRC
 
-1) You need to first initialize the neural network 
-2) Then, you could chose other options. Notice, the option 3 and 4 will keep training the neural network until it reaches the pre-specific settings.
-3) If you want to start another training, you could restart the program or choose option 1 to reset the whole program to initial state.
-
-* Objectives
-** Program
-1) learn, print out the number of epochs and the current population error every 100 epochs.
-2) test, enable he user to test the population of input patterns add see the activation of all units.
-3) show weights
-
-** Questions need to answer
-1) How well/quickly does the network learn different kinds of tasks?
-2) How do the parameter settings affect the learning process?
-3) How robuts/stable is its performance in the face of noise (in the data) or damange (to the network)?
-4) How well does it generalizes from a small grianning set to a larger data set from which the trainning set was a sample?
-5) Find suggestions in the lectures or literature for improving generalization and explore them.
-6) How much training is "enough"?
-7) What is the right size for a neural network?
-
-** Report
-The report should describe:
-1) the design of your network, noting the alternative designs that you considered.
-   - such as, a range of different error functions
-2) the results of your tests
-   - the test you decide to perform
-   - why these are interesting (what questions do they explore)
-   - The result should be presented with discussion, what have you learned, have you answered your original questions?
-3) explorations
-4) Graphs and tables are very useful for summarising and presenting data.
-5) An appendix which provide an overview of how to use your program.
-
-
-
-
+- You need to first initialize the neural network 
+- Then, you could chose other options. Notice, the option 3 and 4 will keep training the neural network until it reaches the pre-specific settings.
+- If you want to start another training, you could restart the program or choose option 1 to reset the whole program to initial state.
+- Option 8 is used to check the hidden units state, it is usefult for testing the training result on encoder/decoder dataset which the hidden units are learning the code book. 
