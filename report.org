@@ -66,7 +66,7 @@ Table ref:table-epochs-needed shows the epochs needed to train my neural network
 #+TBLFM: @37$2=vmean(@2..@36)::@37$3=vmean(@2..@36)::@37$4=vmean(@2..@36)::@37$5=vmean(@2..@36)::@37$6=vmean(@2..@36)::@37$7=vmean(@2..@36)::@38$2=vsum(@2..@36)::@38$3=vsum(@2..@36)::@38$4=vsum(@2..@36)::@38$5=vsum(@2..@36)::@38$6=vsum(@2..@36)::@38$7=vsum(@2..@36)
 - Because sometimes it shows no signs to reach the learning criteria, I have to cancel the training. And the corresponding cell in the table has recorded as N/A.
 - To collect the statistics, I get rid of the corresponding number of N/A for minimum and maximum epochs in each column. For example, there are 2 N/A for r=0.2, so when I compute the average epochs, I will not consider the two smallest and two maximum epochs in the r=0.2 column.
-- The final average value is filled in the final row. After plotting it out, it is shown in figure ref:fig-average-epochs. It shows that the general average epochs needed is increasing  while the learning rate is decreasing.
+- The final average value is filled in the final row. After plotting it out, it is shown in figure ref:fig-average-epochs. It shows that the general average epochs needed are increasing  while the learning rate is decreasing.
   #+CAPTION: shows average epochs needed to reach popErr = 0.05 for training on iris dataset with 6 hidden units label:fig-average-epochs
   [[./average_epochs.png]]
 
@@ -78,7 +78,7 @@ So, using popErr as learning criteria is not sufficient. Furthermore, accuracy c
 #+caption: training on iris dataset, shows accuracy fluctuate a lot with small changes on the popErr  label:fig-iris-fluctuate
 [[./popErr_vs_accuracy_on_iris_accuracy_fluctuate_with_popErr.png]]
 
-Before collecting the testing accuracy, I need to define what is True or False for my learning output. Because the teaching input is integer vector which is used to define classes, there will always some differences between my NN's output and the ground truth. So I define a fit criteria = 0.4, it means if the corresponding attribute between teaching input and NN's out is greater than 0.4, I consider the output is False. For example, during testing I randomly pick a pattern and compare the corresponding attribute difference:
+Before collecting the testing accuracy, I need to define what is True or False for my learning output. Because the teaching input is integer vector which is used to define classes, there will always some differences between my NN's output and the ground truth. So I define the fit criteria = 0.4, it means if the corresponding attribute between teaching input and NN's out is greater than 0.4, I consider the output is False. For example, during testing I randomly pick a pattern and compare the corresponding attribute difference:
 #+BEGIN_SRC sh
   the input is: [0.137 0.584 0.102 0.043]
   the teaching input is: [1. 0. 0.]
@@ -91,9 +91,9 @@ This simple scheme will help me to compare the proportion of each attribute to d
 The accuracy is computed by (the number of True) / (the number of total tested patters). In my program, I will randomly select 100 patterns from testing set. By using testing accuracy as the learning criteria, it alleviates the problem of adjusting the small popErr.
 
 ** Change the number of hidden units
-Though experiment, I can feel that the number of hidden units indeed plays the key role. Since the hidden units controls the ability of abstracting the patters from environment.
+Though experiment, I can feel that the number of hidden units indeed plays the key role. Since the hidden units control the ability to abstract the patterns from the environment.
 *** Change the number of hidden units for encoder/decoder dataset
-Currently, I couldn't get a good result on encoder/decoder dataset. I have tried increase the number of hidden units, but it does not improve the accuracy significantly. Its accuracy is aways around 0.125 which indicates the network is doing arbitrary classification.
+Currently, I couldn't get a good result on encoder/decoder dataset. I have tried increasing the number of hidden units, but it does not improve the accuracy significantly. Its accuracy is always around 0.125 which indicates the network is doing arbitrary classification.
 
 
 *** Change the number of hidden units for iris dataset
