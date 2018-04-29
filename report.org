@@ -2,18 +2,8 @@
 #+latex_header: \usepackage{hyperref}
 #+latex_header: \usepackage{cleveref}
 #+latex_header: \usepackage{xcolor}
-#+latex_header: \hypersetup{
-    colorlinks,
-    linkcolor={red!50!black},
-    citecolor={blue!50!black},
-    urlcolor={blue!80!black}
-}
-#+latex_header: \usepackage[hidelinks]{hyperref}
+#+latex_header: \hypersetup{colorlinks, linkcolor={red!50!black},citecolor={blue!50!black}, urlcolor={blue!80!black}}
 #+latex_header: \usepackage{amsmath}
-#+latex_header: \usepackage{lastpage}
-#+latex_header: \usepackage{fancyhdr}
-#+latex_header: \pagestyle{fancy}
-#+latex_header: \cfoot{\thepage\ of \pageref{LastPage}} 
 #+AUTHOR: Zhao Wei
 
 * Introduction
