@@ -124,7 +124,7 @@ For using the same setting except the number of hidden units, I train the neural
 |          20 |            300 |            600 |
 |-------------+----------------+----------------|
 | time of N/A |              2 |              0 |
-| mean        |                |                |
+|        mean |       2207.142 |            720 |
 
 #+caption: Training on iris dataset with 3 hidden to reach accuracy = 0.9 could be a long process. label:fig-iris-hidden-3-long-process
 [[./popErr_vs_accuracy_on_iris_3hidden_hard.png]]
@@ -133,8 +133,10 @@ For using the same setting except the number of hidden units, I train the neural
 Though the experiments on training my neural network, I notice several points:
 1) Larger learning rate can reduce popErr faster than smaller learning rate. 
 2) However, popErr is hard to used a learning criteria, so I defined the testing accuracy criteria. And find out smaller learning rate can usually reach high accuracy. The reason is to get a high accuracy, the popErr need to be reduced to a smaller value, but big learning rate make the neural network oscillate on the error surface and could not settle down to the minimum. I personally found 0.09 is a good choice, it just works well on my training.
-3) Increase the number of hidden units could boost the learning capacity of neural network. Such as training on iris dataset, when I increase the number of hidden units from 3 to 6, the learning becomes more steady.
-4) The initial state of neural network is very important. Sometimes, same settings with different initial weights will behave very differently. For example, the epochs needed to train neural network to a high accuracy with same settings could be very different. Such as, the training on iris data with 3 hidden units could 
+3) Increase the number of hidden units could boost the learning capacity of neural network. Such as training on iris dataset, when I increase the number of hidden units from 3 to 6, the learning becomes more steady and the average epochs needed to reach that accuracy is also decreased.
+4) The initial state of neural network is very important. Sometimes, same settings with different initial weights will behave very differently. Figure ref:fig-iris-hard-training  shows a hard training process on iris dataset to accuracy = 0.9 with 3 hidden units. Sometimes, you just need faith to keep training your neural network.
+   #+CAPTION: a very hard training on iris dataset with 3 hidden units label:fig-iris-hard-training
+   [[./popErr_vs_accuracy_on_iris_hard_training.png]]
 
 
 In general, it is useful to define different kinds of method to guid the network training, to reach a result you expected. But it is hard to speicify a uniform rule so that as long as you follow that you could reach the goal. Furthermore, if the training of neural network is like walking on the error surpace to reach the global lowest place, then whether you could reach there not only depend on the method you used, but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs with same settings.
