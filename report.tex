@@ -1,4 +1,4 @@
-% Created 2018-04-29 Sun 13:20
+% Created 2018-04-29 Sun 18:04
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -36,20 +36,20 @@
 
 \section{Introduction}
 \label{sec-1}
-My neural network is a simple fully connected feedforward network with just one hidden layers. The number of input, hidden and output units can be specified through a param.txt file. It reads input pattern and teaching input pattern from input.txt and teaching$_{\text{input}}$.txt respectively. 
+My neural network is a simple fully connected feedforward network with just one hidden layer. The number of input, hidden and output units can be specified through a param.txt file. It reads input pattern and teaching input pattern from input.txt and teaching$_{\text{input}}$.txt respectively. 
 
-This report describes the implementation of my neural network and some tests which uses the dataset from several datasets. 
+This report describes the implementation of my neural network and some tests which use the dataset from several datasets. 
 \section{Background}
 \label{sec-2}
-My neural network is a fully connected. It implements the general delta rule for backpropagation and uses sigmoid function as activation function. During initialization, if the number of patterns in data is 150(which is iris flow dataset), then it raondomly select 100 patterns as training dataset, the rest 50 patterns will be used as testing dataset. If the dataset is very simple one, it will not divide dataset into training and testing, since the dataset is so small, and we need every pattern in it to train. My training uses the online approache. It means the backpropagation will be done for every input pattern. Also I shuffle the dataset before every epoch.
+My neural network is a fully connected. It implements the general delta rule for backpropagation and uses sigmoid function as activation function. During initialization, if the number of patterns in data is 150(which is iris flow dataset), then it randomly select 100 patterns as the training dataset, the rest 50 patterns will be used as testing dataset. If the dataset is very simple one, it will not divide the dataset into training and testing, since the dataset is so small, and we need every pattern in it to train. My training uses the online approach. It means the backpropagation will be done for every input pattern. Also, I shuffle the dataset before every epoch.
 
-Since the main structure of the network is mearly fixed. My experiments focus on the changes of learning rate, number of hidden units and using testing accuracy as learning criteria.
+Since the main structure of the network is merely fixed. My experiments focus on the changes of learning rate, number of hidden units and using testing accuracy as learning criteria.
 
 \section{Experiment}
 \label{sec-3}
 \subsection{Change the learning rate}
 \label{sec-3-1}
-Learning rate plays an important role, since it appears in almost every machine learning algorithm. How to set it is based on some heuristic, so I want to see the effect of it on my neural network. I use the iris dataset, and collect training epochs while changing the learning rate with different value.
+Learning rate plays an important role since it appears in almost every machine learning algorithm. How to set it is based on some heuristic, so I want to see the effect of it on my neural network. I use the iris dataset and collect training epochs while changing the learning rate with a different value.
 
 Table \ref{table-epochs-needed} shows the epochs needed to train my neural network to \texttt{learning\_criteria (popErr) = 0.05} with different learning rate on iris dataset. Other parameters are the same including learning momentum is 0.9.
 
@@ -102,8 +102,8 @@ Mean & 663.138 & 371.077 & 608.769 & 436.522 & 715.391 & 1078.652\\
 
 \begin{itemize}
 \item Because sometimes it shows no signs to reach the learning criteria, I have to cancel the training. And the corresponding cell in the table has recorded as N/A.
-\item To collect the statistics, I get rid of corresponding number of N/A for minimum and maximum epochs in the each column. For example, there are 2 N/A for r=0.2, so when I compute the average epochs, I will not consider the two smallest and two maximum epochs in r=0.2 column.
-\item The final average value is filled in the final row. If we plot it out, it is show in figure \ref{fig-average-epochs}. It shows the general average epochs is increase while decreasing the learning rate.
+\item To collect the statistics, I get rid of the corresponding number of N/A for minimum and maximum epochs in each column. For example, there are 2 N/A for r=0.2, so when I compute the average epochs, I will not consider the two smallest and two maximum epochs in the r=0.2 column.
+\item The final average value is filled in the final row. After plotting it out, it is shown in figure \ref{fig-average-epochs}. It shows that the general average epochs needed are increasing  while the learning rate is decreasing.
 \begin{figure}[htb]
 \centering
 \includegraphics[width=.9\linewidth]{./average_epochs.png}
@@ -123,7 +123,7 @@ So, using popErr as learning criteria is not sufficient. Furthermore, accuracy c
 \caption{training on iris dataset, shows accuracy fluctuate a lot with small changes on the popErr  \label{fig-iris-fluctuate}}
 \end{figure}
 
-Before collecting the testing accuracy, I need to define what is True or False for my learning output. Because the teaching input is integer vector which is used to define classes, there will always some differences between my NN's output and the ground truth. So I define a fit criteria = 0.4, it means if the corresponding attribute between teaching input and NN's out is greater than 0.4, I consider the output is False. For example, during testing I randomly pick a pattern and compare the corresponding attribute difference:
+Before collecting the testing accuracy, I need to define what is True or False for my learning output. Because the teaching input is integer vector which is used to define classes, there will always some differences between my NN's output and the ground truth. So I define the fit criteria = 0.4, it means if the corresponding attribute between teaching input and NN's out is greater than 0.4, I consider the output is False. For example, during testing I randomly pick a pattern and compare the corresponding attribute difference:
 \begin{verbatim}
 the input is: [0.137 0.584 0.102 0.043]
 the teaching input is: [1. 0. 0.]
@@ -137,15 +137,15 @@ The accuracy is computed by (the number of True) / (the number of total tested p
 
 \subsection{Change the number of hidden units}
 \label{sec-3-2}
-Though experiment, I can feel that the number of hidden units indeed plays the key role. Since the hidden units controls the ability of abstracting the patters from environment.
-\subsubsection{Change the number of hidden units for encoder/decoder dataset}
+Though experiment, I can feel that the number of hidden units indeed plays the key role. Since the hidden units control the ability to abstract the patterns from the environment.
+\subsubsection{Change the number of hidden units for encoder dataset}
 \label{sec-3-2-1}
-Currently, I couldn't get a good result on encoder/decoder dataset. I have tried increase the number of hidden units, but it does not improve the accuracy significantly. Its accuracy is aways around 0.125 which indicates the network is doing arbitrary classification.
+Currently, I couldn't get a good result on encoder dataset. I have tried increasing the number of hidden units, but it does not improve the accuracy significantly. Its accuracy is always around 0.125 which indicates the network is doing arbitrary classification.
 
 
 \subsubsection{Change the number of hidden units for iris dataset}
 \label{sec-3-2-2}
-For using the same setting except the number of hidden units, I train the neural network on iris dataset with multiple time to collect the epochs needed to reach accurary = 0.9. I record down the result in the table \ref{table-epochs-needed-for-accuracy}. It is clear to see that more hidden units improve the performance of neural network. The fluctuation of training epochs is much smaller on network with 6 hidden units and overall the training time is smaller than using 3 hidden units. Figure \ref{fig-iris-hidden-3-long-process}  shows a hard training process with 3 hidden units.
+For using the same setting except for the number of hidden units, I train the neural network on iris dataset with multiple time to collect the epochs needed to reach accuracy = 0.9. I record down the result in the table \ref{table-epochs-needed-for-accuracy}. It is clear to see that more hidden units could improve the performance of a neural network. The fluctuation of training epochs is much smaller on the network with 6 hidden units and overall the training time is smaller than using 3 hidden units. Figure \ref{fig-iris-hidden-3-long-process}  shows a hard training process with 3 hidden units.
 
 \begin{table}[htb]
 \caption{epochs needed for training on iris dataset to reach accuracy = 0.9 with different hidden units.  \label{table-epochs-needed-for-accuracy}}
@@ -189,10 +189,34 @@ mean & 2207.142 & 720\\
 \label{sec-4}
 Though the experiments on training my neural network, I notice several points:
 \begin{enumerate}
-\item Larger learning rate can reduce popErr faster than smaller learning rate.
-\item However, popErr is hard to used a learning criteria, so I defined the testing accuracy criteria. And find out smaller learning rate can usually reach high accuracy. The reason is to get a high accuracy, the popErr need to be reduced to a smaller value, but big learning rate make the neural network oscillate on the error surface and could not settle down to the minimum. I personally found 0.09 is a good choice, it just works well on my training.
-\item Increase the number of hidden units could boost the learning capacity of neural network. Such as training on iris dataset, when I increase the number of hidden units from 3 to 6, the learning becomes more steady and the average epochs needed to reach that accuracy is also decreased.
-\item The initial state of neural network is very important. Sometimes, same settings with different initial weights will behave very differently. Figure \ref{fig-iris-hard-training}  shows a hard training process on iris dataset to accuracy = 0.9 with 3 hidden units. Sometimes, you just need faith to keep training your neural network.
+\item Larger learning rate can reduce popErr faster than smaller learning rate. However, popErr is hard to use as a learning criterion, so I defined the testing accuracy criteria. And find out smaller learning rate can usually reach high accuracy. The reason is to get a high accuracy, the popErr need to be reduced to a smaller value, but big learning rate makes the neural network oscillate on the error surface and could not settle down to the minimum. I personally found 0.09 is a good choice, it just works well during the training.
+\item Increase the number of hidden units could boost the learning capacity of a neural network. Such as training on iris dataset, when I increase the number of hidden units from 3 to 6, the learning becomes more steady and the average epochs needed to reach that accuracy is also decreased.
+\item I have train the neural network on multiple dataset. The general result is summaried as follow:
+\begin{itemize}
+\item 5:3:5: accurary fluctuated between 0.5 and 0 since it only has two patterns. It is very hard to reach accuracy. After increasing hidden units to 5, accurary fluctuated less and reached 1.0, see figure \ref{fig-535}.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=.9\linewidth]{./popErr_vs_accuracy_on_535.png}
+\caption{training on dataset 5:3:5, with extra hidden units, reach accuracy = 1.0 \label{fig-535}}
+\end{figure}
+\item 2:2:1, xor: My neural network could achieve accuracy = 1.0  using default setting very easily.
+\item 3:3:1: accuracy fluctuated a lot, makes it hard to get a high accuracy. After increasing hidden units to 6, accuracy fluctuate less and reached to high accuracy, see figure \ref{fig-331}.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=.9\linewidth]{./popErr_vs_accuracy_on_331_dataset.png}
+\caption{training on dataset 3:3:1, with extra hidden units, reach accuracy above 0.9 \label{fig-331}}
+\end{figure}
+\item 4:4:1: Using default setting and after a long time training, its accuracy fluctuated to reach 0.95, see figure \ref{fig-441}.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=.9\linewidth]{./popErr_vs_accuracy_on_441.png}
+\caption{It is lucky that after a long time training, the neural network achieved a high accuracy on 4:4:1 dataset  \label{fig-441}}
+\end{figure}
+\item 8:3:8: The popErr could be reduced to 0.09, the accuracy is around 0.11 \textasciitilde{} 0.14.
+\item iris: After increasing hidden units to 6, the training to high accuracy becomes faster and more steady.
+\end{itemize}
+
+\item The initial state of a neural network is very important. Sometimes, same settings with different initial weights will behave very differently. Figure \ref{fig-iris-hard-training} shows a hard training process on iris dataset for accuracy = 0.9 with 3 hidden units. 
 \begin{figure}[htb]
 \centering
 \includegraphics[width=.9\linewidth]{./popErr_vs_accuracy_on_iris_hard_training.png}
@@ -201,7 +225,7 @@ Though the experiments on training my neural network, I notice several points:
 \end{enumerate}
 
 
-In general, it is useful to define different kinds of method to guid the network training, to reach a result you expected. But it is hard to speicify a uniform rule so that as long as you follow that you could reach the goal. Furthermore, if the training of neural network is like walking on the error surpace to reach the global lowest place, then whether you could reach there not only depend on the method you used, but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs with same settings.
+In general, it is useful to define different kinds of method to guide the network training, to reach a result you expected. But it is hard to specify a uniform rule so that as long as you follow that you could reach the goal. Furthermore, if the training of neural network is like walking on the error surface to reach the global lowest place, then whether you could reach there not only depend on the method you used but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs with same settings. At last, after you designing every thing, you just need to wait and have faith in your neural network, such as the case shown in figure \ref{fig-441}.
 
 \section{Appendix}
 \label{sec-5}
@@ -247,7 +271,7 @@ your choice =>
 \item You need to first initialize the neural network
 \item Then, you could chose other options. Notice, the option 3 and 4 will keep training the neural network until it reaches the pre-specific settings.
 \item If you want to start another training, you could restart the program or choose option 1 to reset the whole program to initial state.
-\item Option 8 is used to check the hidden units state, it is usefult for testing the training result on encoder/decoder dataset which the hidden units are learning the code book.
+\item Option 8 is used to check the hidden units state, it is usefult for testing the training result on encoder dataset which the hidden units are learning the code book.
 \end{itemize}
 % Emacs 25.3.1 (Org mode 8.2.10)
 \end{document}

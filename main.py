@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from NeuralNetwork import NN
-import os.path
 from datetime import datetime
 
 class Controller:
@@ -53,14 +52,6 @@ class Controller:
         inputs = np.loadtxt('input.txt')
         teachingInput = np.loadtxt('teaching_input.txt')
 
-        # params = np.loadtxt('encoder_param.txt')
-        # inputs = np.loadtxt('encoder_input.txt')
-        # teachingInput = np.loadtxt('encoder_teaching_input.txt')
-
-        # params = np.loadtxt('xor_param.txt')
-        # inputs = np.loadtxt('xor_input.txt')
-        # teachingInput = np.loadtxt('xor_teaching_input.txt')
-
         self.logFile = open('logfile.txt', 'w')
         self.test_T = 0.0
         self.test_F = 0.0
@@ -92,6 +83,9 @@ class Controller:
         else:
             self.training_set = self.nn.dataset
             self.testing_set = self.nn.dataset
+
+        self.training_set = self.training_set.astype(float)
+        self.testing_set = self.testing_set.astype(float)
 
 
     def quit(self):

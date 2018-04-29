@@ -92,8 +92,8 @@ The accuracy is computed by (the number of True) / (the number of total tested p
 
 ** Change the number of hidden units
 Though experiment, I can feel that the number of hidden units indeed plays the key role. Since the hidden units control the ability to abstract the patterns from the environment.
-*** Change the number of hidden units for encoder/decoder dataset
-Currently, I couldn't get a good result on encoder/decoder dataset. I have tried increasing the number of hidden units, but it does not improve the accuracy significantly. Its accuracy is always around 0.125 which indicates the network is doing arbitrary classification.
+*** Change the number of hidden units for encoder dataset
+Currently, I couldn't get a good result on encoder dataset. I have tried increasing the number of hidden units, but it does not improve the accuracy significantly. Its accuracy is always around 0.125 which indicates the network is doing arbitrary classification.
 
 
 *** Change the number of hidden units for iris dataset
@@ -131,15 +131,28 @@ For using the same setting except for the number of hidden units, I train the ne
 
 * Discussion
 Though the experiments on training my neural network, I notice several points:
-1) Larger learning rate can reduce popErr faster than smaller learning rate. 
-2) However, popErr is hard to use as a learning criterion, so I defined the testing accuracy criteria. And find out smaller learning rate can usually reach high accuracy. The reason is to get a high accuracy, the popErr need to be reduced to a smaller value, but big learning rate makes the neural network oscillate on the error surface and could not settle down to the minimum. I personally found 0.09 is a good choice, it just works well during the training.
-3) Increase the number of hidden units could boost the learning capacity of a neural network. Such as training on iris dataset, when I increase the number of hidden units from 3 to 6, the learning becomes more steady and the average epochs needed to reach that accuracy is also decreased.
-4) The initial state of a neural network is very important. Sometimes, same settings with different initial weights will behave very differently. Figure ref:fig-iris-hard-training  shows a hard training process on iris dataset for accuracy = 0.9 with 3 hidden units. Sometimes, you just need faith to keep training your neural network.
+1) Larger learning rate can reduce popErr faster than smaller learning rate. However, popErr is hard to use as a learning criterion, so I defined the testing accuracy criteria. And find out smaller learning rate can usually reach high accuracy. The reason is to get a high accuracy, the popErr need to be reduced to a smaller value, but big learning rate makes the neural network oscillate on the error surface and could not settle down to the minimum. I personally found 0.09 is a good choice, it just works well during the training.
+2) Increase the number of hidden units could boost the learning capacity of a neural network. Such as training on iris dataset, when I increase the number of hidden units from 3 to 6, the learning becomes more steady and the average epochs needed to reach that accuracy is also decreased.
+3) I have train the neural network on multiple dataset. The general result is summaried as follow:
+   - 5:3:5: accurary fluctuated between 0.5 and 0 since it only has two patterns. It is very hard to reach accuracy. After increasing hidden units to 5, accurary fluctuated less and reached 1.0, see figure ref:fig-535.
+     #+CAPTION: training on dataset 5:3:5, with extra hidden units, reach accuracy = 1.0 label:fig-535
+     [[./popErr_vs_accuracy_on_535.png]]
+   - 2:2:1, xor: My neural network could achieve accuracy = 1.0  using default setting very easily.
+   - 3:3:1: accuracy fluctuated a lot, makes it hard to get a high accuracy. After increasing hidden units to 6, accuracy fluctuate less and reached to high accuracy, see figure ref:fig-331.
+     #+caption: training on dataset 3:3:1, with extra hidden units, reach accuracy above 0.9 label:fig-331
+     [[./popErr_vs_accuracy_on_331_dataset.png]]
+   - 4:4:1: Using default setting and after a long time training, its accuracy fluctuated to reach 0.95, see figure ref:fig-441.
+     #+caption: It is lucky that after a long time training, the neural network achieved a high accuracy on 4:4:1 dataset  label:fig-441
+     [[./popErr_vs_accuracy_on_441.png]]
+   - 8:3:8: The popErr could be reduced to 0.09, the accuracy is around 0.11 ~ 0.14. 
+   - iris: After increasing hidden units to 6, the training to high accuracy becomes faster and more steady.
+
+4) The initial state of a neural network is very important. Sometimes, same settings with different initial weights will behave very differently. Figure ref:fig-iris-hard-training shows a hard training process on iris dataset for accuracy = 0.9 with 3 hidden units. 
    #+CAPTION: a very hard training on iris dataset with 3 hidden units label:fig-iris-hard-training
    [[./popErr_vs_accuracy_on_iris_hard_training.png]]
 
 
-In general, it is useful to define different kinds of method to guide the network training, to reach a result you expected. But it is hard to specify a uniform rule so that as long as you follow that you could reach the goal. Furthermore, if the training of neural network is like walking on the error surface to reach the global lowest place, then whether you could reach there not only depend on the method you used but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs with same settings.
+In general, it is useful to define different kinds of method to guide the network training, to reach a result you expected. But it is hard to specify a uniform rule so that as long as you follow that you could reach the goal. Furthermore, if the training of neural network is like walking on the error surface to reach the global lowest place, then whether you could reach there not only depend on the method you used but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs with same settings. At last, after you designing every thing, you just need to wait and have faith in your neural network, such as the case shown in figure ref:fig-441.
 
 * Appendix
 The whole program is implemented with Python. It uses Numpy for dataset manipulation.
@@ -178,4 +191,4 @@ When It runs, it will goes into a loop to wait the user's input:
 - You need to first initialize the neural network 
 - Then, you could chose other options. Notice, the option 3 and 4 will keep training the neural network until it reaches the pre-specific settings.
 - If you want to start another training, you could restart the program or choose option 1 to reset the whole program to initial state.
-- Option 8 is used to check the hidden units state, it is usefult for testing the training result on encoder/decoder dataset which the hidden units are learning the code book. 
+- Option 8 is used to check the hidden units state, it is usefult for testing the training result on encoder dataset which the hidden units are learning the code book. 

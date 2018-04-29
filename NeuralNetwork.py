@@ -4,10 +4,8 @@ import random
 import math
 import sys
 
-
+# my neural network model, responsible for logic training
 class NN:
-    """Hold the input and teaching input"""
-
     def __init__(self, params, inputs, teachingInput):
         self.inputNeurons = np.zeros(shape=(int(params[0]), 1))
         self.hiddenNeurons = np.zeros(shape=(int(params[1]),1))
@@ -22,7 +20,10 @@ class NN:
         self.num_of_inputAttr = inputs.shape[1]
         
         teachingInput = np.asarray(teachingInput)
-        teachingInput = teachingInput.reshape((teachingInput.shape[0], teachingInput.shape[1]))
+        try:
+            teachingInput = teachingInput.reshape((teachingInput.shape[0], teachingInput.shape[1]))
+        except IndexError:
+            teachingInput = teachingInput.reshape((teachingInput.shape[0], 1))
         self.num_of_outputAttr = teachingInput.shape[1]
 
         self.dataset = np.concatenate((inputs, teachingInput), axis=1)
@@ -61,7 +62,6 @@ class NN:
         self.delta_W_2 = np.zeros(shape=(self.outputNeurons.shape[0], self.hiddenNeurons.shape[0]))
         self.delta_B_h = np.zeros(shape=(self.hiddenNeurons.shape[0], 1))
         self.delta_B_o = np.zeros(shape=(self.outputNeurons.shape[0], 1))
-
 
 
     # this function compute the change of states for a given input pattern
