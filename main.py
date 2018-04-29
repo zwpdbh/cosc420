@@ -57,6 +57,10 @@ class Controller:
         # inputs = np.loadtxt('encoder_input.txt')
         # teachingInput = np.loadtxt('encoder_teaching_input.txt')
 
+        # params = np.loadtxt('xor_param.txt')
+        # inputs = np.loadtxt('xor_input.txt')
+        # teachingInput = np.loadtxt('xor_teaching_input.txt')
+
         self.logFile = open('logfile.txt', 'w')
         self.test_T = 0.0
         self.test_F = 0.0
@@ -125,17 +129,21 @@ class Controller:
             self.logFile.close()
 
     def run100TestAndCollectData(self):
+        self.test_T = 0.0
+        self.test_F = 0.0
         for _ in xrange(100):
             self.test()
         self.test_total = self.test_T + self.test_F
         self.accuracy = self.test_T / self.test_total
         print("the accuracy = %d / %d = %.3f" % (self.test_T, self.test_total,  self.accuracy))
 
-
+    # keep training until the accuracy is above defined value
     def teachToAccuracy(self):
-        while self.accuracy <= self.accuracy_criteria:
+        while self.accuracy < self.accuracy_criteria:
             self.teach100Epoch()
             # randomly select 100 patterns from testing set
+            self.test_T = 0.0
+            self.test_F = 0.0
             for _ in xrange(100):
                 np.random.shuffle(self.testing_set)
                 pattern = self.testing_set[0]

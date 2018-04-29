@@ -1,4 +1,4 @@
-% Created 2018-04-28 Sat 22:49
+% Created 2018-04-29 Sun 12:54
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -116,11 +116,11 @@ Mean & 663.138 & 371.077 & 608.769 & 436.522 & 715.391 & 1078.652\\
 \label{sec-3-1-1}
 Though dozens of experiments, I found out the popErr sometimes could not represent the real effect of learning. After all, we need to generalize well on the training set to confirm the neural network is working which is evaluated by the testing accuracy.  
 
-So, using popErr as learning criteria is not sufficient. Furthermore, a small changes on the popErr could result a big accuracy improvement or even sometimes, the high accuracy does not appear at the lowest popErr, see figure \ref{fig-iris-low-poperr-high-accuracy}.
+So, using popErr as learning criteria is not sufficient. Furthermore, accuracy could fluctuate a lot with small changes on popErr, see figure \ref{fig-iris-fluctuate}.
 \begin{figure}[htb]
 \centering
-\includegraphics[width=.9\linewidth]{./popErr_vs_accuracy_on_iris_oscillate02.png}
-\caption{training on iris dataset, shows lower popErr does not perfectly match high accuracy \label{fig-iris-low-poperr-high-accuracy}}
+\includegraphics[width=.9\linewidth]{./popErr_vs_accuracy_on_iris_accuracy_fluctuate_with_popErr.png}
+\caption{training on iris dataset, shows accuracy fluctuate a lot with small changes on the popErr  \label{fig-iris-fluctuate}}
 \end{figure}
 
 Before collecting the testing accuracy, I need to define what is True or False for my learning output. Because the teaching input is integer vector which is used to define classes, there will always some differences between my NN's output and the ground truth. So I define a fit criteria = 0.4, it means if the corresponding attribute between teaching input and NN's out is greater than 0.4, I consider the output is False. For example, during testing I randomly pick a pattern and compare the corresponding attribute difference:
@@ -137,67 +137,63 @@ The accuracy is computed by (the number of True) / (the number of total tested p
 
 \subsection{Change the number of hidden units}
 \label{sec-3-2}
-Though experiment, I can feel that the number of hidden units indeed plays the key role. It controls the ability of abstracting the patters from environment.
+Though experiment, I can feel that the number of hidden units indeed plays the key role. Since the hidden units controls the ability of abstracting the patters from environment.
 \subsubsection{Change the number of hidden units for encoder/decoder dataset}
 \label{sec-3-2-1}
-When I first use default setting to train encoder/decoder dataset (8:3:8), the popErr is aproaching to 0.095 and accurary is around 0.125. That means my neural network is almost not learning.
-
-However, When I increase the number of hidden units to 8. The popErr and accuracy can be improved to a satisfactory level ,see figure \ref{fig-coder-8hidden}.
-
-\begin{figure}[htb]
-\centering
-\includegraphics[width=.9\linewidth]{./popErr_vs_accuracy_on_coder.png}
-\caption{learning result on the encoder/decoder dataset \label{fig-coder-8hidden}}
-\end{figure}
+Currently, I couldn't get a good result on encoder/decoder dataset. I have tried increase the number of hidden units, but it does not improve the accuracy significantly. Its accuracy is aways around 0.125 which indicates the network is doing arbitrary classification.
 
 
 \subsubsection{Change the number of hidden units for iris dataset}
 \label{sec-3-2-2}
-It is same for iris dataset. When I increases the number of hidden units, it becomes easier to gain a better accurary and lower popErr.
-\begin{itemize}
-\item For using default 3 hidden units, the training is very slow. I could get a small popErr, but it is not enough to get a high accuracy. The accuracy is around 0.53 \textasciitilde{} 0.67 and could not be improved during training.
-\item For using 6 hidden units, the training could be much faster to reach the testing accuracy
+For using the same setting except the number of hidden units, I train the neural network on iris dataset with multiple time to collect the epochs needed to reach accurary = 0.9. I record down the result in the table \ref{table-epochs-needed-for-accuracy}. It is clear to see that more hidden units improve the performance of neural network. The fluctuation of training epochs is much smaller on network with 6 hidden units and overall the training time is smaller than using 3 hidden units. Figure \ref{fig-iris-hidden-3-long-process}  shows a hard training process with 3 hidden units.
+
+\begin{table}[htb]
+\caption{epochs needed for training on iris dataset to reach accuracy = 0.9 with different hidden units.  \label{table-epochs-needed-for-accuracy}}
+\centering
+\begin{tabular}{rrr}
+id & 3 hidden units & 6 hidden units\\
+\hline
+1 & 1000 & 200\\
+2 & 13700 & 900\\
+3 & 1900 & 300\\
+4 & 200 & 400\\
+5 & 5700 & 800\\
+6 & 400 & 300\\
+7 & 1800 & 700\\
+8 & 500 & 200\\
+9 & 1700 & 1200\\
+10 & 5000 & 1400\\
+11 & 200 & 1400\\
+12 & 3400 & 3600\\
+13 & 3100 & 300\\
+14 & 700 & 200\\
+15 & N/A & 300\\
+16 & 700 & 900\\
+17 & N/A & 200\\
+18 &  & 200\\
+19 &  & 300\\
+20 &  & 600\\
+\hline
+mean &  & \\
+\end{tabular}
+\end{table}
+
 \begin{figure}[htb]
 \centering
-\includegraphics[width=.9\linewidth]{./popErr_vs_accuracy_on_iris_6hidden_0.3r.png}
-\caption{training on iris dataset, with 6 hidden units, learning rate = 0.3 \label{fig-iris-6hidden-larger-learning-rate}}
+\includegraphics[width=.9\linewidth]{./popErr_vs_accuracy_on_iris_3hidden_hard.png}
+\caption{Training on iris dataset with 3 hidden to reach accuracy = 0.9 could be a long process. \label{fig-iris-hidden-3-long-process}}
 \end{figure}
-\item In some cases, even small learning rate can train quickly to get good accuracy, see figure \ref{fig-iris-6hidden-quick-learn}.
-\begin{figure}[htb]
-\centering
-\includegraphics[width=.9\linewidth]{./popErr_vs_accuracy_on_iris_very_quickly.png}
-\caption{sometimes the network could be trained very quickly using a small learning rate \label{fig-iris-6hidden-quick-learn}}
-\end{figure}
-\end{itemize}
 
 \section{Discussion}
 \label{sec-4}
 Though the experiments on training my neural network, I notice several points:
 \begin{enumerate}
 \item Larger learning rate can reduce popErr faster than smaller learning rate.
-\item However, popErr is hard to used a learning criteria, so I defined the testing accuracy criteria. And find out smaller learning rate can usually reach high accuracy. The reason is to get a high accuracy, the popErr need to be reduced to a smaller value, but big learning rate make the neural network oscillate on the error surface and could not settle down to the minimum.
-\item Increase the number of hidden units could boost the learning capacity of neural network. Though my experiments it is clear to see that without the extra number of hidden units a high accuracy could not be reached.
-\item The initial state of neural network is very important. Sometimes, same settings with different initial weights will behave very differently. For example, the epochs needed to train neural network to a high accuracy with same settings could be very different, see table \ref{table-epochs-variance-on-iris}.
+\item However, popErr is hard to used a learning criteria, so I defined the testing accuracy criteria. And find out smaller learning rate can usually reach high accuracy. The reason is to get a high accuracy, the popErr need to be reduced to a smaller value, but big learning rate make the neural network oscillate on the error surface and could not settle down to the minimum. I personally found 0.09 is a good choice, it just works well on my training.
+\item Increase the number of hidden units could boost the learning capacity of neural network. Such as training on iris dataset, when I increase the number of hidden units from 3 to 6, the learning becomes more steady.
+\item The initial state of neural network is very important. Sometimes, same settings with different initial weights will behave very differently. For example, the epochs needed to train neural network to a high accuracy with same settings could be very different. Such as, the training on iris data with 3 hidden units could
 \end{enumerate}
-\begin{table}[htb]
-\caption{table shows the big variance of training epochs of training to accuracy = 0.9 on iris dataset with 6 hidden units \label{table-epochs-variance-on-iris}}
-\centering
-\begin{tabular}{rr}
-id & learning rate = 0.09\\
-\hline
-1 & 1000\\
-2 & 900\\
-3 & 2800\\
-4 & 22100\\
-5 & 300\\
-6 & 2000\\
-7 & 1400\\
-8 & 10300\\
-9 & 1500\\
-10 & 1400\\
-\hline
-\end{tabular}
-\end{table}
+
 
 In general, it is useful to define different kinds of method to guid the network training, to reach a result you expected. But it is hard to speicify a uniform rule so that as long as you follow that you could reach the goal. Moreover, if the training of neural network is like walking on the error surpace to reach the global lowest place, then whether you could reach there not only depend on the method you used, but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs.
 
