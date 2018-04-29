@@ -97,7 +97,7 @@ Currently, I couldn't get a good result on encoder/decoder dataset. I have tried
 
 
 *** Change the number of hidden units for iris dataset
-For using the same setting except the number of hidden units, I train the neural network on iris dataset with multiple time to collect the epochs needed to reach accurary = 0.9. I record down the result in the table ref:table-epochs-needed-for-accuracy. It is clear to see that more hidden units improve the performance of neural network. The fluctuation of training epochs is much smaller on network with 6 hidden units and overall the training time is smaller than using 3 hidden units. Figure ref:fig-iris-hidden-3-long-process  shows a hard training process with 3 hidden units.
+For using the same setting except for the number of hidden units, I train the neural network on iris dataset with multiple time to collect the epochs needed to reach accuracy = 0.9. I record down the result in the table ref:table-epochs-needed-for-accuracy. It is clear to see that more hidden units could improve the performance of a neural network. The fluctuation of training epochs is much smaller on the network with 6 hidden units and overall the training time is smaller than using 3 hidden units. Figure ref:fig-iris-hidden-3-long-process  shows a hard training process with 3 hidden units.
 
 #+CAPTION: epochs needed for training on iris dataset to reach accuracy = 0.9 with different hidden units.  label:table-epochs-needed-for-accuracy
 |          id | 3 hidden units | 6 hidden units |
@@ -132,14 +132,14 @@ For using the same setting except the number of hidden units, I train the neural
 * Discussion
 Though the experiments on training my neural network, I notice several points:
 1) Larger learning rate can reduce popErr faster than smaller learning rate. 
-2) However, popErr is hard to used a learning criteria, so I defined the testing accuracy criteria. And find out smaller learning rate can usually reach high accuracy. The reason is to get a high accuracy, the popErr need to be reduced to a smaller value, but big learning rate make the neural network oscillate on the error surface and could not settle down to the minimum. I personally found 0.09 is a good choice, it just works well on my training.
-3) Increase the number of hidden units could boost the learning capacity of neural network. Such as training on iris dataset, when I increase the number of hidden units from 3 to 6, the learning becomes more steady and the average epochs needed to reach that accuracy is also decreased.
-4) The initial state of neural network is very important. Sometimes, same settings with different initial weights will behave very differently. Figure ref:fig-iris-hard-training  shows a hard training process on iris dataset to accuracy = 0.9 with 3 hidden units. Sometimes, you just need faith to keep training your neural network.
+2) However, popErr is hard to use as a learning criterion, so I defined the testing accuracy criteria. And find out smaller learning rate can usually reach high accuracy. The reason is to get a high accuracy, the popErr need to be reduced to a smaller value, but big learning rate makes the neural network oscillate on the error surface and could not settle down to the minimum. I personally found 0.09 is a good choice, it just works well during the training.
+3) Increase the number of hidden units could boost the learning capacity of a neural network. Such as training on iris dataset, when I increase the number of hidden units from 3 to 6, the learning becomes more steady and the average epochs needed to reach that accuracy is also decreased.
+4) The initial state of a neural network is very important. Sometimes, same settings with different initial weights will behave very differently. Figure ref:fig-iris-hard-training  shows a hard training process on iris dataset for accuracy = 0.9 with 3 hidden units. Sometimes, you just need faith to keep training your neural network.
    #+CAPTION: a very hard training on iris dataset with 3 hidden units label:fig-iris-hard-training
    [[./popErr_vs_accuracy_on_iris_hard_training.png]]
 
 
-In general, it is useful to define different kinds of method to guid the network training, to reach a result you expected. But it is hard to speicify a uniform rule so that as long as you follow that you could reach the goal. Furthermore, if the training of neural network is like walking on the error surpace to reach the global lowest place, then whether you could reach there not only depend on the method you used, but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs with same settings.
+In general, it is useful to define different kinds of method to guide the network training, to reach a result you expected. But it is hard to specify a uniform rule so that as long as you follow that you could reach the goal. Furthermore, if the training of neural network is like walking on the error surface to reach the global lowest place, then whether you could reach there not only depend on the method you used but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs with same settings.
 
 * Appendix
 The whole program is implemented with Python. It uses Numpy for dataset manipulation.
