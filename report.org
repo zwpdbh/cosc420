@@ -100,30 +100,31 @@ Currently, I couldn't get a good result on encoder/decoder dataset. I have tried
 For using the same setting except the number of hidden units, I train the neural network on iris dataset with multiple time to collect the epochs needed to reach accurary = 0.9. I record down the result in the table ref:table-epochs-needed-for-accuracy. It is clear to see that more hidden units improve the performance of neural network. The fluctuation of training epochs is much smaller on network with 6 hidden units and overall the training time is smaller than using 3 hidden units. Figure ref:fig-iris-hidden-3-long-process  shows a hard training process with 3 hidden units.
 
 #+CAPTION: epochs needed for training on iris dataset to reach accuracy = 0.9 with different hidden units.  label:table-epochs-needed-for-accuracy
-|   id | 3 hidden units | 6 hidden units |
-|------+----------------+----------------|
-|    1 |           1000 |            200 |
-|    2 |          13700 |            900 |
-|    3 |           1900 |            300 |
-|    4 |            200 |            400 |
-|    5 |           5700 |            800 |
-|    6 |            400 |            300 |
-|    7 |           1800 |            700 |
-|    8 |            500 |            200 |
-|    9 |           1700 |           1200 |
-|   10 |           5000 |           1400 |
-|   11 |            200 |           1400 |
-|   12 |           3400 |           3600 |
-|   13 |           3100 |            300 |
-|   14 |            700 |            200 |
-|   15 |            N/A |            300 |
-|   16 |            700 |            900 |
-|   17 |            N/A |            200 |
-|   18 |          12000 |            200 |
-|   19 |           4700 |            300 |
-|   20 |            300 |            600 |
-|------+----------------+----------------|
-| mean |                |                |
+|          id | 3 hidden units | 6 hidden units |
+|-------------+----------------+----------------|
+|           1 |           1000 |            200 |
+|           2 |          13700 |            900 |
+|           3 |           1900 |            300 |
+|           4 |            200 |            400 |
+|           5 |           5700 |            800 |
+|           6 |            400 |            300 |
+|           7 |           1800 |            700 |
+|           8 |            500 |            200 |
+|           9 |           1700 |           1200 |
+|          10 |           5000 |           1400 |
+|          11 |            200 |           1400 |
+|          12 |           3400 |           3600 |
+|          13 |           3100 |            300 |
+|          14 |            700 |            200 |
+|          15 |            N/A |            300 |
+|          16 |            700 |            900 |
+|          17 |            N/A |            200 |
+|          18 |          12000 |            200 |
+|          19 |           4700 |            300 |
+|          20 |            300 |            600 |
+|-------------+----------------+----------------|
+| time of N/A |              2 |              0 |
+| mean        |                |                |
 
 #+caption: Training on iris dataset with 3 hidden to reach accuracy = 0.9 could be a long process. label:fig-iris-hidden-3-long-process
 [[./popErr_vs_accuracy_on_iris_3hidden_hard.png]]
