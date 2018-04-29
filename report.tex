@@ -1,4 +1,4 @@
-% Created 2018-04-29 Sun 19:03
+% Created 2018-04-29 Sun 20:33
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -36,14 +36,14 @@
 
 \section{Introduction}
 \label{sec-1}
-My neural network is a simple fully connected feedforward network with just one hidden layer. The number of input, hidden and output units can be specified through a param.txt file. It reads input pattern and teaching input pattern from input.txt and teaching$_{\text{input}}$.txt respectively. 
+My neural network is a simple fully connected feedforward network with just one hidden layer. The number of input, hidden and output units can be specified through a \texttt{param.txt} file. The program reads input pattern and teaching input pattern from \texttt{input.txt} and \texttt{teaching\_input.txt} respectively. 
 
-This report describes the implementation of my neural network and some tests which use the dataset from several datasets. 
+This report describes the implementation of my neural network and some tests which use the dataset from cosc420 web page. 
 \section{Background}
 \label{sec-2}
 My neural network is a fully connected. It implements the general delta rule for backpropagation and uses sigmoid function as activation function. During initialization, if the number of patterns in data is 150(which is iris flow dataset), then it randomly select 100 patterns as the training dataset, the rest 50 patterns will be used as testing dataset. If the dataset is very simple one, it will not divide the dataset into training and testing, since the dataset is so small, and we need every pattern in it to train. My training uses the online approach. It means the backpropagation will be done for every input pattern. Also, I shuffle the dataset before every epoch.
 
-Since the main structure of the network is merely fixed. My experiments focus on the changes of learning rate, number of hidden units and using testing accuracy as learning criteria.
+My experiments focus on the changes of learning rate, number of hidden units and using testing accuracy as learning criteria.
 
 \section{Experiment}
 \label{sec-3}
@@ -114,7 +114,7 @@ Mean & 663.138 & 371.077 & 608.769 & 436.522 & 715.391 & 1078.652\\
 
 \subsubsection{Using testing accuracy as criteria}
 \label{sec-3-1-1}
-Though dozens of experiments, I found out the popErr sometimes could not represent the real effect of learning. After all, we need to generalize well on the training set to confirm the neural network is working which is evaluated by the testing accuracy.  
+Though dozens of experiments, I found out the popErr sometimes could not represent the real effect of learning. After all, we need to generalize well on the testing dataset to confirm the neural network is working which is evaluated by the testing accuracy.  
 
 So, using popErr as learning criteria is not sufficient. Furthermore, accuracy could fluctuate a lot with small changes on popErr, see figure \ref{fig-iris-fluctuate}.
 \begin{figure}[htb]
@@ -193,13 +193,13 @@ Though the experiments on training my neural network, I notice several points:
 \item Increase the number of hidden units could boost the learning capacity of a neural network. Such as training on iris dataset, when I increase the number of hidden units from 3 to 6, the learning becomes more steady and the average epochs needed to reach that accuracy is also decreased.
 \item I have train the neural network on multiple datasets. The general result is summarised as follow:
 \begin{itemize}
-\item 5:3:5: accuracy fluctuated between 0.5 and 0 since it only has two patterns. It is very hard to reach accuracy. After increasing hidden units to 5, accuracy fluctuated less and reached 1.0, see figure \ref{fig-535}.
+\item 5:3:5: accuracy fluctuated between 0.5 and 0 since it only has two patterns. It is very hard to reach high accuracy. After increasing hidden units to 5, accuracy fluctuated less and reached 1.0, see figure \ref{fig-535}.
 \begin{figure}[htb]
 \centering
 \includegraphics[width=.9\linewidth]{./popErr_vs_accuracy_on_535.png}
 \caption{training on dataset 5:3:5, with extra hidden units, reach accuracy = 1.0 \label{fig-535}}
 \end{figure}
-\item 2:2:1, xor: My neural network could achieve accuracy = 1.0 using the default setting very easily.
+\item 2:2:1, xor: My neural network could achieve accuracy = 1.0 using the default setting relative easily.
 \item 3:3:1: accuracy fluctuated a lot, makes it hard to get a high accuracy. After increasing hidden units to 6, accuracy fluctuate less and reached to high accuracy, see figure \ref{fig-331}.
 \begin{figure}[htb]
 \centering
@@ -216,7 +216,7 @@ Though the experiments on training my neural network, I notice several points:
 \item iris: After increasing hidden units to 6, the training to high accuracy becomes faster and more steady.
 \end{itemize}
 
-\item The initial state of a neural network is very important. Sometimes, same settings with different initial weights will behave very differently. Figure \ref{fig-iris-hard-training} shows a hard training process on iris dataset for accuracy = 0.9 with 3 hidden units. 
+\item The initial state of a neural network is very important. Sometimes, same settings with different initial weights will behave very differently. For example, figure \ref{fig-iris-hard-training} shows a hard training process on iris dataset for accuracy = 0.9 with 3 hidden units. 
 \begin{figure}[htb]
 \centering
 \includegraphics[width=.9\linewidth]{./popErr_vs_accuracy_on_iris_hard_training.png}
@@ -225,7 +225,7 @@ Though the experiments on training my neural network, I notice several points:
 \end{enumerate}
 
 
-In general, it is useful to define different kinds of method to guide the network training, to reach a result you expected. But it is hard to specify a uniform rule so that as long as you follow that you could reach the goal. Furthermore, if the training of neural network is like walking on the error surface to reach the global lowest place, then whether you could reach there not only depend on the method you used but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs with same settings. At last, after you designing everything, you just need to wait and have faith in your neural network, such as the case shown in figure \ref{fig-441}.
+In general, it is useful to define different kinds of method to guide the network training to reach a result you expected. But it is hard to specify a uniform rule so that as long as you follow that you could reach the goal. Furthermore, if the training of neural network is like walking on the error surface to reach the global lowest place, then whether you could reach there not only depend on the method you used but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs with same settings. At last, after you designing everything, you just need to wait and have faith in your neural network, such as the case shown in figure \ref{fig-441}.
 
 \section{Appendix}
 \label{sec-5}

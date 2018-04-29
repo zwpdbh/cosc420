@@ -134,7 +134,7 @@ class NN:
             # for each row, slice off the corresponding input part
             self.compute_forward(training_set[i][:self.num_of_inputAttr])
             for k in range(0, self.num_of_outputAttr):
-                # self.dataset[i][k + self.num_of_inputAttr] is the corresponding output part
+                # self.dataset[i][k + self.num_of_inputAttr] is the corresponding output attribute part for each k
                 err = training_set[i][k + self.num_of_inputAttr] - self.outputNeurons[k]
                 sum += (err * err)
                 backErrors[k] = err

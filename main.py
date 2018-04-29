@@ -52,7 +52,6 @@ class Controller:
         inputs = np.loadtxt('input.txt')
         teachingInput = np.loadtxt('teaching_input.txt')
 
-        self.logFile = open('logfile.txt', 'w')
         self.test_T = 0.0
         self.test_F = 0.0
         self.accuracy = 0.0
@@ -89,10 +88,9 @@ class Controller:
 
 
     def quit(self):
-        if not self.logFile.close():
-            self.logFile.close()
         exit(1)
 
+    # run 100 epochs on the training
     def teach100Epoch(self):
         count = 0
         print("\ntraining from epoch %d to epoch %d" % (self.totalEpochs, self.totalEpochs + 100))
@@ -102,30 +100,24 @@ class Controller:
             self.totalEpochs += 1
             count += 1
         print("epoch = %d, popErr = %.6f" % (self.totalEpochs, self.popErr))
-        if not self.logFile.close():
-            self.logFile.close()
-        self.logFile = open('logfile.txt', 'a')
-        self.logFile.write("%d %.6f\n" % (self.totalEpochs, self.popErr))
 
+    # train neural network until reaching popErr
     def teachToCriteria(self):
         while True:
             self.popErr = self.nn.train(self.training_set)
             self.totalEpochs += 1
             if self.totalEpochs % 100 == 0:
                 print("epoch = %d, popErr = %.6f" % (self.totalEpochs, self.popErr))
-                self.logFile.write("%d %.6f\n" % (self.totalEpochs, self.popErr))
+
             if self.popErr < self.nn.learning_criterion:
                 print("Reach learning criteria %.3f, stop training, \nepoch = %d, popErr = %.6f" % (self.nn.learning_criterion, self.totalEpochs, self.popErr))
-                self.logFile.write("%d %.6f\n" % (self.totalEpochs, self.popErr))
                 break
 
-        if not self.logFile.close():
-            self.logFile.close()
-
+    # Run 100 test, collect accuracy data
     def run100TestAndCollectData(self):
         self.test_T = 0.0
         self.test_F = 0.0
-        for _ in xrange(100):
+        for _ in range(100):
             self.test()
         self.test_total = self.test_T + self.test_F
         self.accuracy = self.test_T / self.test_total
@@ -135,21 +127,25 @@ class Controller:
     def teachToAccuracy(self):
         while self.accuracy < self.accuracy_criteria:
             self.teach100Epoch()
-            # randomly select 100 patterns from testing set
             self.test_T = 0.0
             self.test_F = 0.0
-            for _ in xrange(100):
+            for _ in range(100):
+                # randomly select one patterns from testing set
                 np.random.shuffle(self.testing_set)
+                # pattern is a tuple with shape (x,)
                 pattern = self.testing_set[0]
+                # get input part
                 input = pattern[:self.nn.num_of_inputAttr]
                 i = self.nn.num_of_outputAttr
+                # if pattern is from iris dataset, then j = 7, i = 3
                 j = pattern.shape[0]
                 teaching_input = pattern[-i:j]
 
                 self.nn.compute_forward(input)
 
                 correct = True
-                for i in xrange(self.nn.num_of_outputAttr):
+                # For every attribute, if the difference between one pair of corresponding attribute is too big => false
+                for i in range(self.nn.num_of_outputAttr):
                     if abs(teaching_input[i] - self.nn.outputNeurons[i]) > self.fit_criteria:
                         correct = False
                         break
@@ -183,7 +179,7 @@ class Controller:
         plt.savefig("popErr_vs_accuracy" + time_str + ".png")
         print("save popErr_vs_accuracy" + time_str + ".png in the current directory")
 
-
+    # randomly pick a pattern from testing set to test
     def test(self):
         np.random.shuffle(self.testing_set)
         pattern = self.testing_set[0]

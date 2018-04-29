@@ -7,13 +7,13 @@
 #+AUTHOR: Zhao Wei
 
 * Introduction
-My neural network is a simple fully connected feedforward network with just one hidden layer. The number of input, hidden and output units can be specified through a param.txt file. It reads input pattern and teaching input pattern from input.txt and teaching_input.txt respectively. 
+My neural network is a simple fully connected feedforward network with just one hidden layer. The number of input, hidden and output units can be specified through a =param.txt= file. The program reads input pattern and teaching input pattern from =input.txt= and =teaching_input.txt= respectively. 
 
-This report describes the implementation of my neural network and some tests which use the dataset from several datasets. 
+This report describes the implementation of my neural network and some tests which use the dataset from cosc420 web page. 
 * Background
 My neural network is a fully connected. It implements the general delta rule for backpropagation and uses sigmoid function as activation function. During initialization, if the number of patterns in data is 150(which is iris flow dataset), then it randomly select 100 patterns as the training dataset, the rest 50 patterns will be used as testing dataset. If the dataset is very simple one, it will not divide the dataset into training and testing, since the dataset is so small, and we need every pattern in it to train. My training uses the online approach. It means the backpropagation will be done for every input pattern. Also, I shuffle the dataset before every epoch.
 
-Since the main structure of the network is merely fixed. My experiments focus on the changes of learning rate, number of hidden units and using testing accuracy as learning criteria.
+My experiments focus on the changes of learning rate, number of hidden units and using testing accuracy as learning criteria.
 
 * Experiment
 ** Change the learning rate
@@ -72,7 +72,7 @@ Table ref:table-epochs-needed shows the epochs needed to train my neural network
 
 
 *** Using testing accuracy as criteria
-Though dozens of experiments, I found out the popErr sometimes could not represent the real effect of learning. After all, we need to generalize well on the training set to confirm the neural network is working which is evaluated by the testing accuracy.  
+Though dozens of experiments, I found out the popErr sometimes could not represent the real effect of learning. After all, we need to generalize well on the testing dataset to confirm the neural network is working which is evaluated by the testing accuracy.  
 
 So, using popErr as learning criteria is not sufficient. Furthermore, accuracy could fluctuate a lot with small changes on popErr, see figure ref:fig-iris-fluctuate.
 #+caption: training on iris dataset, shows accuracy fluctuate a lot with small changes on the popErr  label:fig-iris-fluctuate
@@ -134,10 +134,10 @@ Though the experiments on training my neural network, I notice several points:
 1) Larger learning rate can reduce popErr faster than smaller learning rate. However, popErr is hard to use as a learning criterion, so I defined the testing accuracy criteria. And find out smaller learning rate can usually reach high accuracy. The reason is to get a high accuracy, the popErr need to be reduced to a smaller value, but big learning rate makes the neural network oscillate on the error surface and could not settle down to the minimum. I personally found 0.09 is a good choice, it just works well during the training.
 2) Increase the number of hidden units could boost the learning capacity of a neural network. Such as training on iris dataset, when I increase the number of hidden units from 3 to 6, the learning becomes more steady and the average epochs needed to reach that accuracy is also decreased.
 3) I have train the neural network on multiple datasets. The general result is summarised as follow:
-   - 5:3:5: accuracy fluctuated between 0.5 and 0 since it only has two patterns. It is very hard to reach accuracy. After increasing hidden units to 5, accuracy fluctuated less and reached 1.0, see figure ref:fig-535.
+   - 5:3:5: accuracy fluctuated between 0.5 and 0 since it only has two patterns. It is very hard to reach high accuracy. After increasing hidden units to 5, accuracy fluctuated less and reached 1.0, see figure ref:fig-535.
      #+CAPTION: training on dataset 5:3:5, with extra hidden units, reach accuracy = 1.0 label:fig-535
      [[./popErr_vs_accuracy_on_535.png]]
-   - 2:2:1, xor: My neural network could achieve accuracy = 1.0 using the default setting very easily.
+   - 2:2:1, xor: My neural network could achieve accuracy = 1.0 using the default setting relative easily.
    - 3:3:1: accuracy fluctuated a lot, makes it hard to get a high accuracy. After increasing hidden units to 6, accuracy fluctuate less and reached to high accuracy, see figure ref:fig-331.
      #+caption: training on dataset 3:3:1, with extra hidden units, reach accuracy above 0.9 label:fig-331
      [[./popErr_vs_accuracy_on_331_dataset.png]]
@@ -147,12 +147,12 @@ Though the experiments on training my neural network, I notice several points:
    - 8:3:8: The popErr could be reduced to 0.09, the accuracy is around 0.11 ~ 0.14. 
    - iris: After increasing hidden units to 6, the training to high accuracy becomes faster and more steady.
 
-4) The initial state of a neural network is very important. Sometimes, same settings with different initial weights will behave very differently. Figure ref:fig-iris-hard-training shows a hard training process on iris dataset for accuracy = 0.9 with 3 hidden units. 
+4) The initial state of a neural network is very important. Sometimes, same settings with different initial weights will behave very differently. For example, figure ref:fig-iris-hard-training shows a hard training process on iris dataset for accuracy = 0.9 with 3 hidden units. 
    #+CAPTION: a very hard training on iris dataset with 3 hidden units label:fig-iris-hard-training
    [[./popErr_vs_accuracy_on_iris_hard_training.png]]
 
 
-In general, it is useful to define different kinds of method to guide the network training, to reach a result you expected. But it is hard to specify a uniform rule so that as long as you follow that you could reach the goal. Furthermore, if the training of neural network is like walking on the error surface to reach the global lowest place, then whether you could reach there not only depend on the method you used but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs with same settings. At last, after you designing everything, you just need to wait and have faith in your neural network, such as the case shown in figure ref:fig-441.
+In general, it is useful to define different kinds of method to guide the network training to reach a result you expected. But it is hard to specify a uniform rule so that as long as you follow that you could reach the goal. Furthermore, if the training of neural network is like walking on the error surface to reach the global lowest place, then whether you could reach there not only depend on the method you used but also depends on the initial place you start. That is very hard to control. That's why there is big variance on my training epochs with same settings. At last, after you designing everything, you just need to wait and have faith in your neural network, such as the case shown in figure ref:fig-441.
 
 * Appendix
 The whole program is implemented with Python 2.7.14. It relies on Numpy for dataset manipulation and Pyplot for plotting the graph.
